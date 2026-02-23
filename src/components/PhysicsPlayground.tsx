@@ -99,16 +99,36 @@ export default function PhysicsPlayground() {
     });
     Composite.add(world, mouseConstraint);
 
+    let isDragging = false;
+
+    Matter.Events.on(mouseConstraint, "startdrag", () => {
+      isDragging = true;
+    });
+
+    Matter.Events.on(mouseConstraint, "enddrag", () => {
+      isDragging = false;
+    });
+
     // Custom event to handle pointer-events toggle and clicks
     let mouseDownPos = { x: 0, y: 0 };
     let mouseDownTime = 0;
 
-    const handleMouseDown = (e: MouseEvent) => {
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
       if (!render.canvas) return;
       
       const rect = render.canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+      let clientX, clientY;
+      
+      if ('touches' in e) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      
+      const mouseX = clientX - rect.left;
+      const mouseY = clientY - rect.top;
       
       mouseDownPos = { x: mouseX, y: mouseY };
       mouseDownTime = Date.now();
@@ -121,14 +141,26 @@ export default function PhysicsPlayground() {
       }
     };
 
-    const handleMouseUp = (e: MouseEvent) => {
-      setIsInteractive(false);
+    const handlePointerUp = (e: MouseEvent | TouchEvent) => {
+      if (!isDragging) {
+        setIsInteractive(false);
+      }
       
       if (!render.canvas) return;
       
       const rect = render.canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+      let clientX, clientY;
+      
+      if ('changedTouches' in e) {
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
+      } else {
+        clientX = (e as MouseEvent).clientX;
+        clientY = (e as MouseEvent).clientY;
+      }
+      
+      const mouseX = clientX - rect.left;
+      const mouseY = clientY - rect.top;
       
       const dx = mouseX - mouseDownPos.x;
       const dy = mouseY - mouseDownPos.y;
@@ -180,6 +212,7 @@ export default function PhysicsPlayground() {
       const hoveredBodies = Query.point(bodies, { x: mouseX, y: mouseY });
       
       if (hoveredBodies.length > 0) {
+        setIsInteractive(true);
         const body = hoveredBodies[0];
         const clickableLabels = ["phone number", "email", "insta", "what's app", "address"];
         if (body.label && clickableLabels.includes(body.label)) {
@@ -188,13 +221,18 @@ export default function PhysicsPlayground() {
           document.body.style.cursor = "grab";
         }
       } else {
-        document.body.style.cursor = "default";
+        if (!isDragging) {
+          setIsInteractive(false);
+          document.body.style.cursor = "default";
+        }
       }
     };
 
     // We need to listen on the window or a parent to catch the initial click
-    window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mousedown", handlePointerDown);
+    window.addEventListener("mouseup", handlePointerUp);
+    window.addEventListener("touchstart", handlePointerDown, { passive: false });
+    window.addEventListener("touchend", handlePointerUp);
     window.addEventListener("mousemove", handleMouseMove);
 
     const runner = Runner.create();
@@ -215,8 +253,10 @@ export default function PhysicsPlayground() {
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mousedown", handlePointerDown);
+      window.removeEventListener("mouseup", handlePointerUp);
+      window.removeEventListener("touchstart", handlePointerDown);
+      window.removeEventListener("touchend", handlePointerUp);
       window.removeEventListener("mousemove", handleMouseMove);
       document.body.style.cursor = "default";
       Render.stop(render);

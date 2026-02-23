@@ -36,7 +36,7 @@ export default function Hero() {
 
   // Blocks to Gallery Transition
   // 0.15 to 0.3: Blocks expand and move up
-  const blocksY = useTransform(scrollYProgress, [0, 0.15, 0.3], ["10vh", "10vh", "-30%"]);
+  const blocksY = useTransform(scrollYProgress, [0, 0.15, 0.3], ["10vh", "10vh", "-15vh"]);
   const blocksContainerWidth = useTransform(scrollYProgress, [0, 0.15, 0.3], ["25vw", "25vw", "100vw"]);
   const blocksContainerPadding = useTransform(scrollYProgress, [0, 0.15, 0.3], ["0px", "0px", "48px"]);
   
@@ -68,11 +68,11 @@ export default function Hero() {
 
         {/* Logo */}
         <motion.div 
-          className="absolute top-10 left-1/2 -translate-x-1/2 z-50"
+          className="absolute top-6 md:top-10 left-4 md:left-1/2 md:-translate-x-1/2 z-50"
           style={{ opacity: heroOpacity }}
         >
-          <div className="bg-black px-5 py-1.5 rounded-full">
-            <span className="text-white text-3xl font-black tracking-tighter">3xHike</span>
+          <div className="bg-black px-4 md:px-5 py-1 md:py-1.5 rounded-full">
+            <span className="text-white text-xl md:text-3xl font-black tracking-tighter">3xHike</span>
           </div>
         </motion.div>
 
@@ -81,9 +81,9 @@ export default function Hero() {
           className="text-center max-w-7xl z-10"
           style={{ opacity: heroOpacity, scale: heroScale }}
         >
-          <h1 className="text-white text-[10vw] md:text-[9vw] leading-[0.85] font-black tracking-tighter">
+          <h1 className="text-white text-[12vw] md:text-[9vw] leading-[1.3] md:leading-[0.85] font-black tracking-tighter px-4">
             {lines.map((line, i) => (
-              <div key={i} className="overflow-hidden">
+              <div key={i} className="overflow-hidden pb-4 md:pb-0">
                 <motion.div
                   initial={{ y: "100%" }}
                   animate={{ y: 0 }}
@@ -102,10 +102,10 @@ export default function Hero() {
 
         {/* Gallery Header (Visible after transition) */}
         <motion.div 
-          className="absolute top-20 left-12 z-20"
+          className="absolute top-32 md:top-20 left-4 md:left-12 z-20 pr-24 md:pr-0"
           style={{ opacity: galleryHeaderOpacity }}
         >
-          <h2 className="text-white text-5xl font-black tracking-tighter uppercase">
+          <h2 className="text-white text-3xl md:text-5xl font-black tracking-tighter uppercase">
             our social partners
           </h2>
         </motion.div>
@@ -134,22 +134,10 @@ export default function Hero() {
 
         {/* Gallery Navigation (Visible after transition) */}
         <motion.div 
-          className="absolute bottom-12 right-12 flex items-center gap-8 z-20"
+          className="absolute bottom-4 md:bottom-12 left-4 md:left-auto md:right-12 flex items-center gap-4 md:gap-8 z-20"
           style={{ opacity: galleryHeaderOpacity }}
         >
-          <div className="flex gap-2">
-            <button className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-agency-blue transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-agency-blue transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-          <div className="w-48 h-[2px] bg-white/20 relative">
+          <div className="w-24 md:w-48 h-[2px] bg-white/20 relative">
             <motion.div 
               className="absolute top-0 left-0 h-full bg-white"
               style={{ width: progressWidth }}

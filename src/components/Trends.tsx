@@ -50,42 +50,44 @@ export default function Trends() {
   return (
     <motion.section 
       ref={containerRef}
-      className="relative py-32 px-8 md:px-20 min-h-screen overflow-hidden"
+      className="relative py-20 md:py-32 px-6 md:px-20 min-h-screen overflow-hidden"
       style={{ backgroundColor }}
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-start pt-20 relative z-50">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 items-start pt-10 md:pt-20 relative z-50">
         {/* Left Content */}
-        <div className="sticky top-40">
-          <div className="mb-20">
-            <p className="text-sm font-bold uppercase mb-2">written for</p>
-            <h3 className="text-4xl font-black tracking-tighter mb-12">Adformatie.</h3>
-            <h2 className="text-5xl font-black tracking-tighter leading-[0.9] mb-12 max-w-sm">
+        <div className="relative lg:sticky top-40 lg:h-[calc(100vh-10rem)] flex flex-col justify-end pb-10">
+          <div className="mb-10 md:mb-0">
+            <p className="text-xs md:text-sm font-bold mb-2">written for</p>
+            <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 md:mb-12">Adformatie.</h3>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12 max-w-sm">
               you can't stop the waves, but you can learn to surf.
             </h2>
-            <button className="bg-[#2B38F1] text-white px-8 py-3 rounded-full font-bold text-sm hover:scale-105 transition-transform">
-              all trends
-            </button>
+            <div>
+              <button className="bg-[#2B38F1] text-white px-8 py-3 rounded-full font-bold text-sm hover:scale-105 transition-transform">
+                all trends
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Right List */}
-        <div className="space-y-12">
+        <div className="space-y-8 md:space-y-12">
           {trends.map((trend, i) => (
             <motion.div 
               key={i}
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="flex items-center gap-12 group cursor-pointer"
+              className="flex items-center gap-6 md:gap-12 group cursor-pointer"
             >
-              <div className="w-32 h-32 flex-shrink-0 relative">
+              <div className="w-20 h-20 md:w-32 md:h-32 flex-shrink-0 relative">
                 <Shape type={trend.shape} color={trend.color} />
               </div>
               <div>
-                <h4 className="text-3xl font-black tracking-tighter leading-tight group-hover:italic transition-all">
+                <h4 className="text-xl md:text-3xl font-black tracking-tighter leading-tight group-hover:italic transition-all">
                   {trend.title}
                 </h4>
-                <p className="text-sm font-medium opacity-60 mt-2">{trend.date}</p>
+                <p className="text-xs md:text-sm font-medium opacity-60 mt-2">{trend.date}</p>
               </div>
             </motion.div>
           ))}

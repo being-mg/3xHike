@@ -9,16 +9,24 @@ const navItems = [
 ];
 
 export default function Navigation() {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="fixed right-6 top-10 z-50 flex flex-col gap-2 items-end">
+    <div className="fixed right-4 md:right-6 top-6 md:top-10 z-50 flex flex-col gap-4 md:gap-2 items-end">
       {navItems.map((item, i) => (
         <motion.div
           key={i}
-          className={`${item.color} px-6 py-1.5 rounded-full cursor-pointer flex items-center justify-center min-w-[100px] shadow-lg`}
+          onClick={() => scrollToSection(item.label)}
+          className={`${item.color} px-4 md:px-6 py-2 md:py-1.5 rounded-full cursor-pointer flex items-center justify-center min-w-[80px] md:min-w-[100px] shadow-lg`}
           whileHover={{ scale: 1.05, x: -5 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="text-white text-[13px] font-black lowercase tracking-tight">
+          <span className="text-white text-[11px] md:text-[13px] font-black lowercase tracking-tight">
             {item.label}
           </span>
         </motion.div>

@@ -24,12 +24,12 @@ export default function Specialists() {
   return (
     <motion.section 
       ref={containerRef}
-      className="relative min-h-[150vh] py-32 px-8 md:px-20 overflow-hidden"
+      className="relative min-h-[150vh] py-20 md:py-32 px-6 md:px-20 overflow-hidden"
       style={{ backgroundColor }}
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center h-full pt-20">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20 items-center h-full pt-10 md:pt-20">
         {/* Stacking Cards */}
-        <div className="relative h-[70vh] flex items-center justify-center">
+        <div className="relative h-[40vh] md:h-[70vh] flex items-center justify-center">
           {stackImages.map((src, i) => (
             <StackCard 
               key={i} 
@@ -42,10 +42,10 @@ export default function Specialists() {
 
         {/* Text Content */}
         <div className="max-w-xl">
-          <h2 className="text-7xl font-black tracking-tighter leading-[0.9] mb-12">
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12">
             we are social media <br /> specialists.
           </h2>
-          <div className="space-y-6 text-lg text-black/80 font-medium leading-relaxed">
+          <div className="space-y-6 text-base md:text-lg text-black/80 font-medium leading-relaxed">
             <p>
               Dorst & Lesser is a global social media agency based in Amsterdam, 
               driven by a team of over 50 social media enthusiasts. Our mission is 
@@ -96,7 +96,7 @@ function StackCard({ src, index, scrollYProgress }: { src: string; index: number
 
   return (
     <motion.div
-      className="absolute w-[30vw] h-[45vw] lg:w-[22vw] lg:h-[33vw] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10"
+      className="absolute w-[40vw] h-[60vw] lg:w-[22vw] lg:h-[33vw] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10"
       style={{
         rotate,
         y,

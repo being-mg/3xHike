@@ -42,14 +42,24 @@ export default function App() {
     <main className="relative">
       <CustomCursor />
       <Navigation />
-      <Hero />
-      <About />
+      <div id="work">
+        <Hero />
+      </div>
+      <div id="about">
+        <About />
+      </div>
       <Services />
-      <Specialists />
+      <div id="careers">
+        <Specialists />
+      </div>
       <div className="relative">
         <PhysicsPlayground />
-        <Trends />
-        <Footer />
+        <div id="trends">
+          <Trends />
+        </div>
+        <div id="contact">
+          <Footer />
+        </div>
       </div>
     </main>
   );

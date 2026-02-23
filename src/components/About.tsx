@@ -52,19 +52,19 @@ export default function About() {
   return (
     <motion.section 
       ref={containerRef} 
-      className="relative py-32 px-8 md:px-20 min-h-[200vh]"
+      className="relative py-20 md:py-32 px-6 md:px-20 min-h-[200vh]"
       style={{ backgroundColor }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
-        <div className="sticky top-32 h-[70vh] rounded-3xl overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20">
+        <div className="relative lg:sticky top-auto lg:top-32 h-[50vh] md:h-[70vh] rounded-3xl overflow-hidden order-first lg:order-none mb-10 lg:mb-0">
           {images.map((src, i) => (
             <AboutImage key={i} src={src} index={i} scrollYProgress={scrollYProgress} />
           ))}
         </div>
         
-        <motion.div className="flex flex-col justify-center gap-20 py-20" style={{ color: textColor }}>
+        <motion.div className="flex flex-col justify-center gap-12 md:gap-20 py-10 md:py-20" style={{ color: textColor }}>
           <div className="max-w-md">
-            <h2 className="text-6xl uppercase leading-[0.9] mb-8">
+            <h2 className="text-4xl md:text-6xl uppercase leading-[0.9] mb-6 md:mb-8">
               We make <br /> <motion.span style={{ color: brandHumanColor }}>brands human</motion.span>
             </h2>
             <p className="text-xl opacity-70 leading-relaxed">
