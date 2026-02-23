@@ -100,20 +100,36 @@ export default function PhysicsPlayground() {
     Composite.add(world, mouseConstraint);
 
     // Custom event to handle pointer-events toggle and clicks
-    const handleMouseDown = () => {
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!render.canvas) return;
+      
+      const rect = render.canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
       const bodies = Composite.allBodies(world);
-      const clickedBodies = Query.point(bodies, mouse.position);
+      const clickedBodies = Query.point(bodies, { x: mouseX, y: mouseY });
       
       if (clickedBodies.length > 0) {
         const clickedBody = clickedBodies[0];
         
+        // Visual feedback: slight pulse
+        Matter.Body.scale(clickedBody, 1.1, 1.1);
+        setTimeout(() => {
+          Matter.Body.scale(clickedBody, 1/1.1, 1/1.1);
+        }, 100);
+
         // Handle specific label clicks
         if (clickedBody.label === "phone number") {
-          window.location.href = "tel:+919140659614";
+          const link = document.createElement('a');
+          link.href = "tel:+919140659614";
+          link.click();
         } else if (clickedBody.label === "email") {
-          window.location.href = "mailto:niels@dorstenlesser.nl";
+          const link = document.createElement('a');
+          link.href = "mailto:3xhike@gmail.com";
+          link.click();
         } else if (clickedBody.label === "insta") {
-          window.open("https://instagram.com", "_blank");
+          window.open("https://instagram.com/3xhike", "_blank");
         } else if (clickedBody.label === "what's app") {
           window.open("https://wa.me/919140659614", "_blank");
         }
@@ -126,9 +142,16 @@ export default function PhysicsPlayground() {
       setIsInteractive(false);
     };
 
-    const handleMouseMove = () => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!render.canvas) return;
+      
+      const rect = render.canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
       const bodies = Composite.allBodies(world);
-      const hoveredBodies = Query.point(bodies, mouse.position);
+      const hoveredBodies = Query.point(bodies, { x: mouseX, y: mouseY });
+      
       if (hoveredBodies.length > 0) {
         const body = hoveredBodies[0];
         const clickableLabels = ["phone number", "email", "insta", "what's app"];

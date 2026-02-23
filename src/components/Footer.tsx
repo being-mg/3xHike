@@ -14,7 +14,7 @@ export default function Footer() {
       {/* Huge Footer Text */}
       <div className="absolute bottom-0 left-0 w-full z-10 pointer-events-none select-none">
         <h2 className="text-white text-[25vw] font-black tracking-tighter leading-[0.65] whitespace-nowrap">
-          DORST & LESSER
+          3xHike
         </h2>
       </div>
     </footer>

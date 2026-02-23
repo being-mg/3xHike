@@ -72,7 +72,7 @@ export default function Hero() {
           style={{ opacity: heroOpacity }}
         >
           <div className="bg-black px-5 py-1.5 rounded-full">
-            <span className="text-white text-3xl font-black tracking-tighter">D&L</span>
+            <span className="text-white text-3xl font-black tracking-tighter">3xHike</span>
           </div>
         </motion.div>
 
