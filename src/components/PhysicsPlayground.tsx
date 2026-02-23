@@ -100,6 +100,9 @@ export default function PhysicsPlayground() {
     Composite.add(world, mouseConstraint);
 
     // Custom event to handle pointer-events toggle and clicks
+    let mouseDownPos = { x: 0, y: 0 };
+    let mouseDownTime = 0;
+
     const handleMouseDown = (e: MouseEvent) => {
       if (!render.canvas) return;
       
@@ -107,39 +110,63 @@ export default function PhysicsPlayground() {
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
       
+      mouseDownPos = { x: mouseX, y: mouseY };
+      mouseDownTime = Date.now();
+      
       const bodies = Composite.allBodies(world);
       const clickedBodies = Query.point(bodies, { x: mouseX, y: mouseY });
       
       if (clickedBodies.length > 0) {
-        const clickedBody = clickedBodies[0];
-        
-        // Visual feedback: slight pulse
-        Matter.Body.scale(clickedBody, 1.1, 1.1);
-        setTimeout(() => {
-          Matter.Body.scale(clickedBody, 1/1.1, 1/1.1);
-        }, 100);
-
-        // Handle specific label clicks
-        if (clickedBody.label === "phone number") {
-          const link = document.createElement('a');
-          link.href = "tel:+919140659614";
-          link.click();
-        } else if (clickedBody.label === "email") {
-          const link = document.createElement('a');
-          link.href = "mailto:3xhike@gmail.com";
-          link.click();
-        } else if (clickedBody.label === "insta") {
-          window.open("https://instagram.com/3xhike", "_blank");
-        } else if (clickedBody.label === "what's app") {
-          window.open("https://wa.me/919140659614", "_blank");
-        }
-        
         setIsInteractive(true);
       }
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: MouseEvent) => {
       setIsInteractive(false);
+      
+      if (!render.canvas) return;
+      
+      const rect = render.canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      
+      const dx = mouseX - mouseDownPos.x;
+      const dy = mouseY - mouseDownPos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const timeElapsed = Date.now() - mouseDownTime;
+      
+      // If the mouse hasn't moved much and it was a quick interaction, treat it as a click
+      if (distance < 10 && timeElapsed < 500) {
+        const bodies = Composite.allBodies(world);
+        const clickedBodies = Query.point(bodies, { x: mouseX, y: mouseY });
+        
+        if (clickedBodies.length > 0) {
+          const clickedBody = clickedBodies[0];
+          
+          // Visual feedback: slight pulse
+          Matter.Body.scale(clickedBody, 1.1, 1.1);
+          setTimeout(() => {
+            Matter.Body.scale(clickedBody, 1/1.1, 1/1.1);
+          }, 100);
+
+          // Handle specific label clicks
+          if (clickedBody.label === "phone number") {
+            const link = document.createElement('a');
+            link.href = "tel:+919140659614";
+            link.click();
+          } else if (clickedBody.label === "email") {
+            const link = document.createElement('a');
+            link.href = "mailto:3xhike@gmail.com";
+            link.click();
+          } else if (clickedBody.label === "insta") {
+            window.open("https://instagram.com/3xhike", "_blank");
+          } else if (clickedBody.label === "what's app") {
+            window.open("https://wa.me/919140659614", "_blank");
+          } else if (clickedBody.label === "address") {
+            window.open("https://maps.app.goo.gl/G66bRERuH19HD4FZ8", "_blank");
+          }
+        }
+      }
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -154,7 +181,7 @@ export default function PhysicsPlayground() {
       
       if (hoveredBodies.length > 0) {
         const body = hoveredBodies[0];
-        const clickableLabels = ["phone number", "email", "insta", "what's app"];
+        const clickableLabels = ["phone number", "email", "insta", "what's app", "address"];
         if (body.label && clickableLabels.includes(body.label)) {
           document.body.style.cursor = "pointer";
         } else {
