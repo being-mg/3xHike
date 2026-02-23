@@ -37,58 +37,56 @@ export default function PhysicsPlayground() {
     Composite.add(world, [ground, leftWall, rightWall]);
 
     // Create falling elements
-    const colors = ["#2B38F1", "#F4CE14", "#FF6B2B", "#A0C1A6", "#FFFFFF"];
+    const labels = ["insta", "phone number", "address", "what's app", "email", "lets talk"];
+    const colors = ["#2B38F1", "#F4CE14", "#FF6B2B", "#A0C1A6", "#1A1A1A"];
     const shapes: Matter.Body[] = [];
 
-    // Add some "Scoop" shapes
-    for (let i = 0; i < 25; i++) {
+    // Add specific label shapes
+    for (let i = 0; i < 30; i++) {
+      const label = labels[i % labels.length];
       const x = Math.random() * width;
-      const y = -Math.random() * 2000 - 200; // Start even higher for a delayed fall effect
-      const size = 50 + Math.random() * 70;
-      const color = colors[Math.floor(Math.random() * colors.length)];
+      const y = -Math.random() * 3000 - 200;
+      const color = colors[i % colors.length];
       
-      let body;
-      const type = Math.random();
+      // Calculate width based on text length
+      const textWidth = label.length * 12 + 40;
+      const body = Bodies.rectangle(x, y, textWidth, 50, {
+        restitution: 0.4,
+        friction: 0.5,
+        chamfer: { radius: 25 },
+        label: label, // Store label in the body
+        render: { 
+          fillStyle: color,
+          strokeStyle: "#000000",
+          lineWidth: 1
+        }
+      });
       
-      if (type < 0.3) {
-        // Flower shape (approximated with a circle and high friction)
-        body = Bodies.circle(x, y, size / 2, {
-          restitution: 0.4,
-          friction: 0.5,
-          render: { 
-            fillStyle: color,
-            strokeStyle: "#000000",
-            lineWidth: 1
-          }
-        });
-      } else if (type < 0.6) {
-        // Stack shape (rectangle)
-        body = Bodies.rectangle(x, y, size * 1.2, size * 0.8, {
-          restitution: 0.4,
-          friction: 0.5,
-          chamfer: { radius: 15 },
-          render: { 
-            fillStyle: color,
-            strokeStyle: "#000000",
-            lineWidth: 1
-          }
-        });
-      } else {
-        // Wave shape (capsule-like)
-        body = Bodies.rectangle(x, y, size * 1.5, size * 0.5, {
-          restitution: 0.4,
-          friction: 0.5,
-          chamfer: { radius: 25 },
-          render: { 
-            fillStyle: color,
-            strokeStyle: "#000000",
-            lineWidth: 1
-          }
-        });
-      }
       shapes.push(body);
     }
     Composite.add(world, shapes);
+
+    // Draw text on bodies
+    Matter.Events.on(render, 'afterRender', () => {
+      const context = render.context;
+      const bodies = Composite.allBodies(world);
+
+      context.font = "bold 14px Inter, sans-serif";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+
+      bodies.forEach((body) => {
+        if (body.label && labels.includes(body.label)) {
+          const { x, y } = body.position;
+          context.save();
+          context.translate(x, y);
+          context.rotate(body.angle);
+          context.fillStyle = (body.render.fillStyle === "#1A1A1A" || body.render.fillStyle === "#2B38F1") ? "#FFFFFF" : "#000000";
+          context.fillText(body.label.toUpperCase(), 0, 0);
+          context.restore();
+        }
+      });
+    });
 
     // Mouse control
     const mouse = Mouse.create(render.canvas);
@@ -101,11 +99,25 @@ export default function PhysicsPlayground() {
     });
     Composite.add(world, mouseConstraint);
 
-    // Custom event to handle pointer-events toggle
+    // Custom event to handle pointer-events toggle and clicks
     const handleMouseDown = () => {
       const bodies = Composite.allBodies(world);
       const clickedBodies = Query.point(bodies, mouse.position);
+      
       if (clickedBodies.length > 0) {
+        const clickedBody = clickedBodies[0];
+        
+        // Handle specific label clicks
+        if (clickedBody.label === "phone number") {
+          window.location.href = "tel:+919140659614";
+        } else if (clickedBody.label === "email") {
+          window.location.href = "mailto:niels@dorstenlesser.nl";
+        } else if (clickedBody.label === "insta") {
+          window.open("https://instagram.com", "_blank");
+        } else if (clickedBody.label === "what's app") {
+          window.open("https://wa.me/919140659614", "_blank");
+        }
+        
         setIsInteractive(true);
       }
     };
@@ -118,7 +130,13 @@ export default function PhysicsPlayground() {
       const bodies = Composite.allBodies(world);
       const hoveredBodies = Query.point(bodies, mouse.position);
       if (hoveredBodies.length > 0) {
-        document.body.style.cursor = "grab";
+        const body = hoveredBodies[0];
+        const clickableLabels = ["phone number", "email", "insta", "what's app"];
+        if (body.label && clickableLabels.includes(body.label)) {
+          document.body.style.cursor = "pointer";
+        } else {
+          document.body.style.cursor = "grab";
+        }
       } else {
         document.body.style.cursor = "default";
       }

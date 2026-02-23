@@ -12,6 +12,10 @@
 }
 
 @layer base {
+  * {
+    cursor: none !important;
+  }
+
   body {
     @apply bg-agency-beige text-black overflow-x-hidden antialiased;
     font-family: var(--font-sans);

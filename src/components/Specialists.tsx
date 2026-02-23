@@ -27,25 +27,6 @@ export default function Specialists() {
       className="relative min-h-[150vh] py-32 px-8 md:px-20 overflow-hidden"
       style={{ backgroundColor }}
     >
-      {/* Top Logo */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 z-50">
-        <div className="bg-black px-5 py-1.5 rounded-full">
-          <span className="text-white text-3xl font-black tracking-tighter">D&L</span>
-        </div>
-      </div>
-
-      {/* Left Blue Dot */}
-      <div className="absolute left-10 top-1/2 -translate-y-1/2 w-4 h-4 bg-blue-600 rounded-full" />
-
-      {/* Right Colored Dots */}
-      <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col gap-4">
-        <div className="w-8 h-8 bg-blue-600 rounded-full" />
-        <div className="w-8 h-8 bg-blue-500 rounded-full" />
-        <div className="w-8 h-8 bg-orange-500 rounded-full" />
-        <div className="w-8 h-8 bg-orange-400 rounded-full" />
-        <div className="w-8 h-8 bg-yellow-500 rounded-full" />
-      </div>
-
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center h-full pt-20">
         {/* Stacking Cards */}
         <div className="relative h-[70vh] flex items-center justify-center">
