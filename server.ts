@@ -24,14 +24,17 @@ db.exec(`
 
 // Seed data if empty
 const partnerCount = db.prepare("SELECT COUNT(*) as count FROM partners").get() as { count: number };
+console.log("Current partner count:", partnerCount.count);
 if (partnerCount.count === 0) {
+  console.log("Seeding partners...");
   const insertPartner = db.prepare("INSERT INTO partners (name, videoUrl, clientUrl) VALUES (?, ?, ?)");
-  insertPartner.run("alpro", "https://assets.mixkit.co/videos/preview/mixkit-waterfall-in-forest-2213-large.mp4", "#");
+  insertPartner.run("alpro", "/0227%20(1).mp4", "#");
   insertPartner.run("action", "https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-the-breeze-1188-large.mp4", "#");
   insertPartner.run("gall & gall", "https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4", "#");
   insertPartner.run("hornbach", "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4", "#");
   insertPartner.run("jägermeister", "https://assets.mixkit.co/videos/preview/mixkit-waterfall-in-forest-2213-large.mp4", "#");
   insertPartner.run("biscoff", "https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-the-breeze-1188-large.mp4", "#");
+  console.log("Seeding complete.");
 }
 
 const scoopCount = db.prepare("SELECT COUNT(*) as count FROM scoop").get() as { count: number };
@@ -50,7 +53,9 @@ async function startServer() {
 
   // API Routes
   app.get("/api/partners", (req, res) => {
+    console.log("Fetching partners...");
     const partners = db.prepare("SELECT * FROM partners").all();
+    console.log("Partners found:", partners.length);
     res.json(partners);
   });
 

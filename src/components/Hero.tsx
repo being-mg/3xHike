@@ -21,7 +21,10 @@ export default function Hero() {
   useEffect(() => {
     fetch("/api/partners")
       .then(res => res.json())
-      .then(data => setPartners(data));
+      .then(data => {
+        console.log("Partners loaded:", data);
+        setPartners(data);
+      });
 
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
@@ -36,7 +39,7 @@ export default function Hero() {
 
   // Blocks to Gallery Transition
   // 0.15 to 0.3: Blocks expand and move up
-  const blocksY = useTransform(scrollYProgress, [0, 0.15, 0.3], ["10vh", "10vh", "-15vh"]);
+  const blocksY = useTransform(scrollYProgress, [0, 0.15, 0.3], ["0vh", "0vh", "-15vh"]);
   const blocksContainerWidth = useTransform(scrollYProgress, [0, 0.15, 0.3], ["25vw", "25vw", "100vw"]);
   const blocksContainerPadding = useTransform(scrollYProgress, [0, 0.15, 0.3], ["0px", "0px", "48px"]);
   
@@ -121,14 +124,14 @@ export default function Hero() {
           }}
         >
           <motion.div style={{ x, gap }} className="flex items-end h-full w-full">
-            {partners.map((partner, i) => (
+            {partners.length > 0 ? partners.map((partner, i) => (
               <VideoCard 
                 key={partner.id} 
                 partner={partner} 
                 index={i} 
                 scrollYProgress={scrollYProgress}
               />
-            ))}
+            )) : null}
           </motion.div>
         </motion.div>
 
@@ -152,6 +155,19 @@ export default function Hero() {
 
 function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; index: number; scrollYProgress: any }) {
   const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isHovered) {
+        console.log("Playing video:", partner.name);
+        videoRef.current.play().catch(err => console.log("Video play failed:", err));
+      } else {
+        console.log("Pausing video:", partner.name);
+        videoRef.current.pause();
+      }
+    }
+  }, [isHovered]);
 
   // Transition from block to card
   // Blocks are at the bottom, different widths and heights
@@ -173,20 +189,29 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
   return (
     <motion.div className="flex-shrink-0 flex flex-col justify-end" style={{ opacity }}>
       <motion.div
-        className={`relative overflow-hidden cursor-none group ${index < 4 ? initialColor : "bg-white/5"}`}
+        className={`relative overflow-hidden cursor-none group bg-transparent`}
         style={{ width, height, borderRadius }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => {
+          console.log("Hover enter:", partner.name);
+          setIsHovered(true);
+        }}
+        onMouseLeave={() => {
+          console.log("Hover leave:", partner.name);
+          setIsHovered(false);
+        }}
       >
         <motion.video
-          autoPlay
+          ref={videoRef}
           loop
           muted
           playsInline
+          preload="auto"
+          poster="https://picsum.photos/seed/video/400/600"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: useTransform(scrollYProgress, [0.2, 0.35], [0, 1]) }}
+          style={{ opacity: 1 }}
         >
           <source src={partner.videoUrl} type="video/mp4" />
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-waterfall-in-forest-2213-large.mp4" type="video/mp4" />
         </motion.video>
         
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" />
