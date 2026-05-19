@@ -2,9 +2,9 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const images = [
-  "https://picsum.photos/seed/agency1/800/1000",
-  "https://picsum.photos/seed/agency2/800/1000",
-  "https://picsum.photos/seed/agency3/800/1000",
+  "https://res.cloudinary.com/dxfgeowvx/image/upload/q_auto/f_auto/v1779220399/Screenshot_2026-05-20_011909_bswmn5.png",
+  "https://res.cloudinary.com/dxfgeowvx/image/upload/q_auto/f_auto/v1779220422/Screenshot_2026-05-20_011737_j5rami.png",
+  "https://res.cloudinary.com/dxfgeowvx/image/upload/q_auto/f_auto/v1779220437/Screenshot_2026-05-20_012344_js3t5g.png",
 ];
 
 function AboutImage({ src, index, scrollYProgress }: { src: string; index: number; scrollYProgress: any }) {

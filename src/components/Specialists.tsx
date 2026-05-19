@@ -1,10 +1,14 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
+import specialistImage1 from "../assets/images/regenerated_image_1779221318661.png";
+import specialistImage2 from "../assets/images/regenerated_image_1779221315273.png";
+import specialistImage3 from "../assets/images/regenerated_image_1779221322859.png";
+
 const stackImages = [
-  "https://picsum.photos/seed/specialist1/800/1200",
-  "https://picsum.photos/seed/specialist2/800/1200",
-  "https://picsum.photos/seed/specialist3/800/1200",
+  specialistImage1,
+  specialistImage2,
+  specialistImage3,
 ];
 
 export default function Specialists() {

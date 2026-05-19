@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 interface Partner {
   id: number;
@@ -155,11 +155,18 @@ export default function Hero() {
 
 function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; index: number; scrollYProgress: any }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest: number) => {
+    setIsOpen(latest >= 0.3);
+  });
+
+  const shouldPlay = isHovered && isOpen;
 
   useEffect(() => {
     if (videoRef.current) {
-      if (isHovered) {
+      if (shouldPlay) {
         console.log("Playing video:", partner.name);
         videoRef.current.play().catch(err => console.log("Video play failed:", err));
       } else {
@@ -167,17 +174,19 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
         videoRef.current.pause();
       }
     }
-  }, [isHovered]);
+  }, [shouldPlay]);
 
   // Transition from block to card
   // Blocks are at the bottom, different widths and heights
   const blockWidths = ["40%", "20%", "20%", "20%"];
   const blockHeights = ["100%", "80%", "80%", "80%"];
-  const blockColors = ["bg-black", "bg-[#ff6b2b]", "bg-[#ffcc00]", "bg-[#a8c69f]"];
+  
+  // Use website colors for background
+  const themeColors = ["bg-[#F4CE14]", "bg-[#FF6B2B]", "bg-[#A0C1A6]", "bg-black", "bg-[#F3EFE9]"];
+  const blockColor = themeColors[index % themeColors.length];
 
   const initialWidth = index < 4 ? blockWidths[index] : "0vw";
   const initialHeight = index < 4 ? blockHeights[index] : "0vh";
-  const initialColor = index < 4 ? blockColors[index] : "bg-white/5";
 
   const width = useTransform(scrollYProgress, [0.15, 0.3], [initialWidth, "22vw"]);
   const height = useTransform(scrollYProgress, [0.15, 0.3], [initialHeight, "39vw"]);
@@ -189,11 +198,13 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
   return (
     <motion.div className="flex-shrink-0 flex flex-col justify-end" style={{ opacity }}>
       <motion.div
-        className={`relative overflow-hidden cursor-none group bg-transparent`}
+        className={`relative overflow-hidden cursor-none group ${blockColor}`}
         style={{ width, height, borderRadius }}
         onMouseEnter={() => {
-          console.log("Hover enter:", partner.name);
-          setIsHovered(true);
+          if (isOpen) {
+            console.log("Hover enter:", partner.name);
+            setIsHovered(true);
+          }
         }}
         onMouseLeave={() => {
           console.log("Hover leave:", partner.name);
@@ -206,17 +217,16 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
           muted
           playsInline
           preload="auto"
-          poster="https://picsum.photos/seed/video/400/600"
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 1 }}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          style={{ opacity: shouldPlay ? 1 : 0 }}
         >
           <source src={partner.videoUrl} type="video/mp4" />
           <source src="https://assets.mixkit.co/videos/preview/mixkit-waterfall-in-forest-2213-large.mp4" type="video/mp4" />
         </motion.video>
         
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" />
+        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" style={{ opacity: shouldPlay ? 1 : 0 }} />
         
-        {isHovered && (
+        {shouldPlay && (
           <motion.div
             className="fixed pointer-events-none z-50 w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-black uppercase tracking-tighter text-center p-4 shadow-xl"
             initial={{ scale: 0 }}

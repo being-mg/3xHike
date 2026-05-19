@@ -100,14 +100,11 @@ export default function Trends() {
 function Shape({ type, color }: { type: string; color: string }) {
   if (type === "flower") {
     return (
-      <div className={`w-full h-full ${color} rounded-full relative overflow-hidden`}>
-        {[...Array(8)].map((_, i) => (
-          <div 
-            key={i} 
-            className={`absolute inset-0 ${color} rounded-full`} 
-            style={{ transform: `rotate(${i * 45}deg) translateY(-20%)` }}
-          />
-        ))}
+      <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-1">
+        <div className={`w-full h-full ${color} rounded-full`} />
+        <div className={`w-full h-full ${color} rounded-full`} />
+        <div className={`w-full h-full ${color} rounded-full`} />
+        <div className={`w-full h-full ${color} rounded-full`} />
       </div>
     );
   }

@@ -28,13 +28,46 @@ console.log("Current partner count:", partnerCount.count);
 if (partnerCount.count === 0) {
   console.log("Seeding partners...");
   const insertPartner = db.prepare("INSERT INTO partners (name, videoUrl, clientUrl) VALUES (?, ?, ?)");
-  insertPartner.run("alpro", "/0227%20(1).mp4", "#");
-  insertPartner.run("action", "https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-the-breeze-1188-large.mp4", "#");
-  insertPartner.run("gall & gall", "https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4", "#");
-  insertPartner.run("hornbach", "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4", "#");
-  insertPartner.run("jägermeister", "https://assets.mixkit.co/videos/preview/mixkit-waterfall-in-forest-2213-large.mp4", "#");
-  insertPartner.run("biscoff", "https://assets.mixkit.co/videos/preview/mixkit-tree-branches-in-the-breeze-1188-large.mp4", "#");
+  insertPartner.run("grazia stone", "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779217991/interior_design_f0sty1.mov", "#");
+  insertPartner.run("plan my interior", "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218600/Doors_AI_ads_hvxw6r.mp4", "#");
+  insertPartner.run("vistara infra", "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/motion_graphics_Real_estate_y7fz8k.mp4", "#");
+  insertPartner.run("zaira jewellery", "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218601/ai_story_bracelet_ad_etgcef.mp4", "#");
+  insertPartner.run("cinco livings", "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218610/ugc_ad_og6llh.mp4", "#");
+  insertPartner.run("allen town international school", "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/school_ad_czugtm.mp4", "#");
   console.log("Seeding complete.");
+} else {
+  // Update the first partner to be grazia stone if the database is already seeded
+  db.prepare("UPDATE partners SET name = ?, videoUrl = ? WHERE id = 1").run(
+    "grazia stone", 
+    "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779217991/interior_design_f0sty1.mov"
+  );
+  // Update the second partner to be plan my interior
+  db.prepare("UPDATE partners SET name = ?, videoUrl = ? WHERE id = 2").run(
+    "plan my interior", 
+    "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218600/Doors_AI_ads_hvxw6r.mp4"
+  );
+  // Update the third partner to be vistara infra
+  db.prepare("UPDATE partners SET name = ?, videoUrl = ? WHERE id = 3").run(
+    "vistara infra", 
+    "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/motion_graphics_Real_estate_y7fz8k.mp4"
+  );
+  // Update the fourth partner to be zaira jewellery
+  db.prepare("UPDATE partners SET name = ?, videoUrl = ? WHERE id = 4").run(
+    "zaira jewellery", 
+    "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218601/ai_story_bracelet_ad_etgcef.mp4"
+  );
+  // Update the fifth partner to be cinco livings
+  db.prepare("UPDATE partners SET name = ?, videoUrl = ? WHERE id = 5").run(
+    "cinco livings", 
+    "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218610/ugc_ad_og6llh.mp4"
+  );
+  // Update the sixth partner to be allen town international school
+  db.prepare("UPDATE partners SET name = ?, videoUrl = ? WHERE id = 6").run(
+    "allen town international school", 
+    "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/school_ad_czugtm.mp4"
+  );
+  // Delete any other stray copies to avoid duplicates
+  db.prepare("DELETE FROM partners WHERE (name = 'zaira stones' OR name = 'grazia stone' OR name = 'plan my interior' OR name = 'vistara infra' OR name = 'zaira jewellery' OR name = 'cinco livings' OR name = 'allen town international school') AND id NOT IN (1, 2, 3, 4, 5, 6)").run();
 }
 
 const scoopCount = db.prepare("SELECT COUNT(*) as count FROM scoop").get() as { count: number };
