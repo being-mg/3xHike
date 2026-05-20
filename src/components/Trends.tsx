@@ -3,32 +3,32 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 const trends = [
   {
-    title: "the social scoop – february",
-    date: "3 February 2026",
+    title: "Why Most Ads Fail in the First 3 Seconds",
+    date: "14 May 2026",
     color: "bg-[#2B38F1]",
     shape: "flower"
   },
   {
-    title: "instagram reels on your tv",
-    date: "24 December 2025",
+    title: "The Psychology Behind Viral Reels",
+    date: "2 May 2026",
     color: "bg-[#F4CE14]",
     shape: "stack"
   },
   {
-    title: "the social scoop – week 52",
-    date: "22 December 2025",
+    title: "Meta Ads vs Organic Content in 2026",
+    date: "18 April 2026",
     color: "bg-[#FF6B2B]",
     shape: "wave"
   },
   {
-    title: "the social scoop – week 50",
-    date: "8 December 2025",
+    title: "How Local Brands Can Scale Using Short Form Content",
+    date: "4 April 2026",
     color: "bg-[#2B38F1]",
     shape: "wave-alt"
   },
   {
-    title: "the trend full of life lessons",
-    date: "28 November 2025",
+    title: "What Makes UGC Ads Convert Better",
+    date: "20 March 2026",
     color: "bg-[#F4CE14]",
     shape: "stack"
   }
@@ -57,14 +57,14 @@ export default function Trends() {
         {/* Left Content */}
         <div className="relative lg:sticky top-40 lg:h-[calc(100vh-10rem)] flex flex-col justify-end pb-10">
           <div className="mb-10 md:mb-0">
-            <p className="text-xs md:text-sm font-bold mb-2">written for</p>
-            <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 md:mb-12">Adformatie.</h3>
+            <p className="text-xs md:text-sm font-bold mb-2 uppercase tracking-wide opacity-50">INSIGHTS</p>
+            <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 md:mb-12">Performance Data.</h3>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12 max-w-sm">
-              you can't stop the waves, but you can learn to surf.
+              Attention Is the New Currency.
             </h2>
             <div>
-              <button className="bg-[#2B38F1] text-white px-8 py-3 rounded-full font-bold text-sm hover:scale-105 transition-transform">
-                all trends
+              <button className="bg-[#2B38F1] text-white px-8 py-3 rounded-full font-bold text-sm uppercase hover:scale-105 transition-transform tracking-wider">
+                All Insights
               </button>
             </div>
           </div>

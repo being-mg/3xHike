@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import logoImage from "../assets/images/logo.png";
 
 interface Partner {
   id: number;
@@ -53,8 +54,8 @@ export default function Hero() {
   const galleryHeaderOpacity = useTransform(scrollYProgress, [0.25, 0.35], [0, 1]);
 
   const lines = [
-    "social media agency",
-    "for leading brands."
+    "We build brands",
+    "people remember."
   ];
 
   return (
@@ -71,20 +72,39 @@ export default function Hero() {
 
         {/* Logo */}
         <motion.div 
-          className="absolute top-6 md:top-10 left-4 md:left-1/2 md:-translate-x-1/2 z-50"
+          className="absolute top-6 md:top-8 left-4 md:left-1/2 md:-translate-x-1/2 z-50 flex items-center justify-center"
           style={{ opacity: heroOpacity }}
         >
-          <div className="bg-black px-4 md:px-5 py-1 md:py-1.5 rounded-full">
-            <span className="text-white text-xl md:text-3xl font-black tracking-tighter">3xHike</span>
-          </div>
+          <img 
+            src={logoImage} 
+            alt="3xHike Logo" 
+            style={{
+              height: "200px",
+              width: "220px",
+              paddingLeft: "0px",
+              marginLeft: "-20px",
+              marginRight: "-20px",
+              marginTop: "-47px",
+              marginBottom: "-60px"
+            }}
+          />
         </motion.div>
 
         {/* Hero Content */}
         <motion.div 
-          className="text-center max-w-7xl z-10"
+          className="text-center max-w-7xl z-10 pointer-events-none flex flex-col items-center justify-center gap-6"
           style={{ opacity: heroOpacity, scale: heroScale }}
         >
-          <h1 className="text-white text-[12vw] md:text-[9vw] leading-[1.3] md:leading-[0.85] font-black tracking-tighter px-4">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="text-white/60 tracking-[0.2em] text-sm md:text-base font-medium font-sans uppercase mb-[-2rem]"
+          >
+            PERFORMANCE • CONTENT • GROWTH
+          </motion.p>
+          
+          <h1 className="text-white text-[12vw] md:text-[9vw] leading-[1.3] md:leading-[0.85] font-black tracking-tighter px-4 font-display">
             {lines.map((line, i) => (
               <div key={i} className="overflow-hidden pb-4 md:pb-0">
                 <motion.div
@@ -95,12 +115,37 @@ export default function Hero() {
                     delay: i * 0.2,
                     ease: [0.16, 1, 0.3, 1],
                   }}
+                  style={
+                    i === 0
+                      ? { fontFamily: "Times New Roman", fontStyle: "italic", marginBottom: "47px" }
+                      : { fontFamily: "Georgia", fontWeight: "normal", fontStyle: "normal", textDecorationLine: "none", lineHeight: "1.2", fontSize: "0.8em" }
+                  }
                 >
                   {line}
                 </motion.div>
               </div>
             ))}
           </h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
+            className="max-w-2xl mx-auto px-4 pointer-events-auto"
+          >
+            <p className="text-white/80 text-lg md:text-xl font-medium leading-relaxed mb-8 font-sans">
+              Performance marketing meets cinematic storytelling.<br className="hidden md:block" />
+              We help brands scale with scroll-stopping creatives, data-backed ads, and content engineered for attention.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-colors w-full sm:w-auto">
+                Book a Strategy Call
+              </button>
+              <button className="bg-transparent border border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-colors w-full sm:w-auto">
+                View Our Work
+              </button>
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* Gallery Header (Visible after transition) */}
@@ -214,7 +259,6 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
         <motion.video
           ref={videoRef}
           loop
-          muted
           playsInline
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"

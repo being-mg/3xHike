@@ -8,43 +8,54 @@ const images = [
 ];
 
 function AboutImage({ src, index, scrollYProgress }: { src: string; index: number; scrollYProgress: any }) {
+  const startFade = (index - 1) * 0.4 + 0.2;
+  const endFade = startFade + 0.2;
+
   const opacity = useTransform(
     scrollYProgress,
-    [index * 0.33, (index + 1) * 0.33],
-    [index === 0 ? 1 : 0, 1]
+    [startFade, endFade],
+    [0, 1]
   );
 
   return (
     <motion.img
       src={src}
       alt="Agency Culture"
-      className="absolute inset-0 w-full h-full object-cover"
-      style={{ opacity }}
+      className={index === 0 ? "block w-full h-auto object-cover" : "absolute inset-0 w-full h-full object-cover"}
+      style={{ opacity: index === 0 ? 1 : opacity }}
     />
   );
 }
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
+  
+  // Scroll progress for the background and text color changes
+  const { scrollYProgress: colorScrollProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "start start"]
   });
 
+  // Scroll progress for the image transitions (slower, spans the whole section)
+  const { scrollYProgress: imageScrollProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end center"]
+  });
+
   const backgroundColor = useTransform(
-    scrollYProgress,
+    colorScrollProgress,
     [0, 0.8],
     ["#2B38F1", "#FFFFFF"]
   );
 
   const textColor = useTransform(
-    scrollYProgress,
+    colorScrollProgress,
     [0, 0.8],
     ["#FFFFFF", "#000000"]
   );
 
   const brandHumanColor = useTransform(
-    scrollYProgress,
+    colorScrollProgress,
     [0, 0.8],
     ["#FFFFFF", "#2B38F1"]
   );
@@ -56,36 +67,45 @@ export default function About() {
       style={{ backgroundColor }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20">
-        <div className="relative lg:sticky top-auto lg:top-32 h-[50vh] md:h-[70vh] rounded-3xl overflow-hidden order-first lg:order-none mb-10 lg:mb-0">
+        <div className="relative lg:sticky top-auto lg:top-32 rounded-3xl overflow-hidden order-first lg:order-none mb-10 lg:mb-0 h-auto">
           {images.map((src, i) => (
-            <AboutImage key={i} src={src} index={i} scrollYProgress={scrollYProgress} />
+            <AboutImage key={i} src={src} index={i} scrollYProgress={imageScrollProgress} />
           ))}
         </div>
         
         <motion.div className="flex flex-col justify-center gap-12 md:gap-20 py-10 md:py-20" style={{ color: textColor }}>
           <div className="max-w-md">
-            <h2 className="text-4xl md:text-6xl uppercase leading-[0.9] mb-6 md:mb-8">
-              We make <br /> <motion.span style={{ color: brandHumanColor }}>brands human</motion.span>
+            <h2 className="text-4xl md:text-6xl uppercase leading-[0.9] mb-6 md:mb-8 font-black tracking-tighter">
+              Impossible <br /> <motion.span style={{ color: brandHumanColor }}>to ignore</motion.span>
             </h2>
-            <p className="text-xl opacity-70 leading-relaxed">
-              In a world of algorithms, we focus on the humans behind the screens. 
-              Our approach combines data-driven strategy with raw, authentic storytelling.
+            <p className="text-xl opacity-70 leading-relaxed font-medium">
+              In a world where attention disappears in seconds, we help brands become impossible to ignore. 
+              We combine paid media, creative psychology, and high-converting content to turn clicks into customers.
             </p>
           </div>
           
           <div className="max-w-md">
-            <h3 className="text-3xl uppercase mb-6">Strategy first</h3>
-            <p className="text-lg opacity-60">
-              We don't just post content. We build ecosystems that thrive on engagement 
-               and convert followers into advocates.
+            <h3 className="text-3xl font-bold uppercase tracking-tighter mb-6">Performance Marketing</h3>
+            <p className="text-lg opacity-80 leading-relaxed font-medium">
+              From local businesses to scaling brands, we build marketing systems designed for measurable growth across the most competitive platforms.
             </p>
           </div>
 
           <div className="max-w-md">
-            <h3 className="text-3xl uppercase mb-6">Creative always</h3>
-            <p className="text-lg opacity-60">
-              Our studio is a playground for innovation. From 9:16 cinematic captures 
-              to interactive AR experiences, we push the boundaries of what's possible.
+            <h3 className="text-3xl font-bold uppercase tracking-tighter mb-6">Audiences Into Communities</h3>
+            <p className="text-lg opacity-80 leading-relaxed font-medium">
+              We focus on what drives actual results – turning passive scrollers into dedicated brand communities with engaging, platform-native storytelling.
+            </p>
+          </div>
+
+          <div className="max-w-md">
+            <h3 className="text-3xl font-bold uppercase tracking-tighter mb-6">Creative That Performs</h3>
+            <p className="text-lg opacity-80 leading-relaxed font-medium">
+              We create content designed for today’s attention economy — short-form videos, ad creatives, branded visuals, and campaigns that stop the scroll and drive action.
+            </p>
+            <p className="text-lg opacity-80 leading-relaxed font-medium mt-4">
+              Every frame has a purpose.<br />
+              Every campaign has a strategy.
             </p>
           </div>
         </motion.div>

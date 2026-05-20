@@ -46,20 +46,27 @@ export default function Specialists() {
 
         {/* Text Content */}
         <div className="max-w-xl">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12">
-            we are social media <br /> specialists.
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12 uppercase">
+            we don't run ads <br /> we build attention machines.
           </h2>
-          <div className="space-y-6 text-base md:text-lg text-black/80 font-medium leading-relaxed">
+          <div className="space-y-6 text-base md:text-lg text-black/80 font-medium leading-relaxed mb-16">
             <p>
-              Dorst & Lesser is a global social media agency based in Amsterdam, 
-              driven by a team of over 50 social media enthusiasts. Our mission is 
-              to make brands more social by fostering meaningful connections with 
-              their communities and enhancing brand loyalty through the power of AI social data.
+              Every brand has content. Very few know how to convert attention into revenue.
             </p>
             <p>
-              Since our founding in 2011, we have been leaders in the social media space. 
-              We all love what we do, which is why we've made our work our playground—a 
-              place where friendships begin and grow.
+              Our team blends creative strategy, performance marketing, and platform-native storytelling to create campaigns that actually move people — and numbers.
+            </p>
+          </div>
+
+          <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-[0.9] mb-6 md:mb-8 uppercase">
+            a team obsessed with growth.
+          </h3>
+          <div className="space-y-6 text-base md:text-lg text-black/80 font-medium leading-relaxed">
+            <p>
+              Designers, editors, strategists, media buyers, and creators working together to build brands that dominate digitally.
+            </p>
+            <p>
+              We move fast, test aggressively, and create content people actually want to watch.
             </p>
           </div>
         </div>
