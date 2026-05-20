@@ -9,7 +9,14 @@ interface Partner {
 }
 
 export default function Hero() {
-  const [partners, setPartners] = useState<Partner[]>([]);
+  const [partners, setPartners] = useState<Partner[]>([
+    { id: 1, name: "grazia stone", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779217991/interior_design_f0sty1.mov", clientUrl: "#" },
+    { id: 2, name: "plan my interior", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218600/Doors_AI_ads_hvxw6r.mp4", clientUrl: "#" },
+    { id: 3, name: "vistara infra", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/motion_graphics_Real_estate_y7fz8k.mp4", clientUrl: "#" },
+    { id: 4, name: "zaira jewellery", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218601/ai_story_bracelet_ad_etgcef.mp4", clientUrl: "#" },
+    { id: 5, name: "cinco livings", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218610/ugc_ad_og6llh.mp4", clientUrl: "#" },
+    { id: 6, name: "allen town international school", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/school_ad_czugtm.mp4", clientUrl: "#" }
+  ]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -19,13 +26,6 @@ export default function Hero() {
   });
 
   useEffect(() => {
-    fetch("/api/partners")
-      .then(res => res.json())
-      .then(data => {
-        console.log("Partners loaded:", data);
-        setPartners(data);
-      });
-
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
