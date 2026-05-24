@@ -37,21 +37,59 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Hero Text Animations
   const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.9]);
 
   // Blocks to Gallery Transition
   // 0.15 to 0.3: Blocks expand and move up
-  const blocksY = useTransform(scrollYProgress, [0, 0.15, 0.3], ["0vh", "0vh", "-15vh"]);
-  const blocksContainerWidth = useTransform(scrollYProgress, [0, 0.15, 0.3], ["25vw", "25vw", "100vw"]);
-  const blocksContainerPadding = useTransform(scrollYProgress, [0, 0.15, 0.3], ["0px", "0px", "48px"]);
+  const blocksY = useTransform(
+    scrollYProgress, 
+    [0, 0.15, 0.3], 
+    ["0vh", "0vh", isMobile ? "-8vh" : "-15vh"]
+  );
+  
+  const blocksContainerWidth = useTransform(
+    scrollYProgress, 
+    [0.15, 0.3], 
+    [isMobile ? "60vw" : "25vw", "100vw"]
+  );
+
+  const blocksContainerPadding = useTransform(
+    scrollYProgress, 
+    [0.15, 0.3], 
+    ["0px", isMobile ? "16px" : "48px"]
+  );
   
   // Horizontal Scroll
   // 0.3 to 1: Scroll horizontally
-  const x = useTransform(scrollYProgress, [0.3, 1], ["0%", `-${(partners.length - 3) * 25}%`]);
+  const xStr = isMobile 
+    ? `-${(partners.length - 1.25) * 75}%` 
+    : `-${(partners.length - 3) * 25}%`;
+  const x = useTransform(scrollYProgress, [0.3, 1], ["0%", xStr]);
+
   const progressWidth = useTransform(scrollYProgress, [0.3, 1], ["0%", "100%"]);
-  const gap = useTransform(scrollYProgress, [0.15, 0.3], ["1px", "24px"]);
+
+  const gap = useTransform(
+    scrollYProgress, 
+    [0.15, 0.3], 
+    ["1px", isMobile ? "16px" : "24px"]
+  );
 
   // Header and Navigation visibility
   const galleryHeaderOpacity = useTransform(scrollYProgress, [0.25, 0.35], [0, 1]);
@@ -62,33 +100,35 @@ export default function Hero() {
   ];
 
   return (
-    <section ref={containerRef} className="relative h-[600vh] bg-agency-blue cursor-none">
+    <section ref={containerRef} className="relative h-[600vh] bg-agency-blue md:cursor-none">
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         
-        {/* Custom Cursor Dot */}
-        <motion.div 
-          className="fixed left-0 top-0 w-4 h-4 bg-black rounded-full z-[100] pointer-events-none"
-          animate={{ x: mousePos.x - 8, y: mousePos.y - 8 }}
-          transition={{ type: "spring", damping: 25, stiffness: 250, mass: 0.5 }}
-          style={{ opacity: heroOpacity }}
-        />
+         {/* Custom Cursor Dot */}
+        {!isMobile && (
+          <motion.div 
+            className="fixed left-0 top-0 w-4 h-4 bg-black rounded-full z-[100] pointer-events-none"
+            animate={{ x: mousePos.x - 8, y: mousePos.y - 8 }}
+            transition={{ type: "spring", damping: 25, stiffness: 250, mass: 0.5 }}
+            style={{ opacity: heroOpacity }}
+          />
+        )}
 
         {/* Logo */}
         <motion.div 
-          className="absolute top-6 md:top-8 left-4 md:left-1/2 md:-translate-x-1/2 z-50 flex items-center justify-center"
+          className="absolute top-6 md:top-8 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center"
           style={{ opacity: heroOpacity }}
         >
           <img 
             src={logoImage} 
             alt="3xHike Logo" 
             style={{
-              height: "200px",
-              width: "220px",
+              height: isMobile ? "54px" : "200px",
+              width: isMobile ? "60px" : "220px",
               paddingLeft: "0px",
-              marginLeft: "-20px",
-              marginRight: "-20px",
-              marginTop: "-47px",
-              marginBottom: "-60px"
+              marginLeft: isMobile ? "-4px" : "-20px",
+              marginRight: isMobile ? "-4px" : "-20px",
+              marginTop: isMobile ? "-12px" : "-47px",
+              marginBottom: isMobile ? "-15px" : "-60px"
             }}
           />
         </motion.div>
@@ -150,10 +190,10 @@ export default function Hero() {
 
         {/* Gallery Header (Visible after transition) */}
         <motion.div 
-          className="absolute top-32 md:top-20 left-4 md:left-12 z-20 pr-24 md:pr-0"
+          className="absolute top-10 md:top-20 left-4 md:left-12 z-20 pr-24 md:pr-0"
           style={{ opacity: galleryHeaderOpacity }}
         >
-          <h2 className="text-white text-3xl md:text-5xl font-black tracking-tighter uppercase">
+          <h2 className="text-white text-2xl md:text-5xl font-black tracking-tighter uppercase h-auto md:h-[72px]">
             our social partners
           </h2>
         </motion.div>
@@ -171,10 +211,11 @@ export default function Hero() {
           <motion.div style={{ x, gap }} className="flex items-end h-full w-full">
             {partners.length > 0 ? partners.map((partner, i) => (
               <VideoCard 
-                key={partner.id} 
+                key={`${partner.id}-${isMobile}`} 
                 partner={partner} 
                 index={i} 
                 scrollYProgress={scrollYProgress}
+                isMobile={isMobile}
               />
             )) : null}
           </motion.div>
@@ -198,7 +239,7 @@ export default function Hero() {
   );
 }
 
-function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; index: number; scrollYProgress: any }) {
+function VideoCard({ partner, index, scrollYProgress, isMobile }: { partner: Partner; index: number; scrollYProgress: any; isMobile: boolean }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -264,8 +305,8 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
   const initialWidth = index < 4 ? blockWidths[index] : "0vw";
   const initialHeight = index < 4 ? blockHeights[index] : "0vh";
 
-  const width = useTransform(scrollYProgress, [0.15, 0.3], [initialWidth, "22vw"]);
-  const height = useTransform(scrollYProgress, [0.15, 0.3], [initialHeight, "39vw"]);
+  const width = useTransform(scrollYProgress, [0.15, 0.3], [initialWidth, isMobile ? "75vw" : "22vw"]);
+  const height = useTransform(scrollYProgress, [0.15, 0.3], [initialHeight, isMobile ? "110vw" : "39vw"]);
   const borderRadius = useTransform(scrollYProgress, [0.15, 0.3], [index < 4 ? "12px 12px 0 0" : "16px", "16px"]);
   const opacity = useTransform(scrollYProgress, [0.15, 0.25], [index < 4 ? 1 : 0, 1]);
   const labelOpacity = useTransform(scrollYProgress, [0.3, 0.4], [0, 1]);
@@ -274,7 +315,7 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
   return (
     <motion.div className="flex-shrink-0 flex flex-col justify-end" style={{ opacity }}>
       <motion.div
-        className={`relative overflow-hidden cursor-none group ${blockColor}`}
+        className={`relative overflow-hidden md:cursor-none group ${blockColor}`}
         style={{ width, height, borderRadius }}
         onClick={togglePlay}
         onMouseEnter={() => {
@@ -333,7 +374,7 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
           </div>
         </motion.div>
         
-        {isHovered && isOpen && (
+        {isHovered && isOpen && !isMobile && (
           <motion.div
             className="fixed pointer-events-none z-50 w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-black uppercase tracking-tighter text-center p-4 shadow-xl"
             initial={{ scale: 0 }}

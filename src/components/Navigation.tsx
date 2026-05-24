@@ -17,7 +17,7 @@ export default function Navigation() {
   };
 
   return (
-    <div className="fixed right-4 md:right-6 top-6 md:top-10 z-50 flex flex-col gap-4 md:gap-2 items-end">
+    <div className="hidden md:flex fixed right-4 md:right-6 top-6 md:top-10 z-50 flex-col gap-4 md:gap-2 items-end">
       {navItems.map((item, i) => (
         <motion.div
           key={i}
