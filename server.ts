@@ -20,6 +20,15 @@ db.exec(`
     thumbnailUrl TEXT,
     link TEXT
   );
+  CREATE TABLE IF NOT EXISTS leads (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT,
+    phone TEXT,
+    budget TEXT,
+    requirement TEXT,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 // Seed data if empty
@@ -95,6 +104,67 @@ async function startServer() {
   app.get("/api/scoop", (req, res) => {
     const scoop = db.prepare("SELECT * FROM scoop").all();
     res.json(scoop);
+  });
+
+  app.post("/api/leads", async (req, res) => {
+    try {
+      const { name, email, phone, budget, requirement } = req.body;
+      const stmt = db.prepare("INSERT INTO leads (name, email, phone, budget, requirement) VALUES (?, ?, ?, ?, ?)");
+      const result = stmt.run(name, email, phone, budget, requirement);
+
+      // Attempt to append to Google Sheets if credentials are provided in env
+      const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+      const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'); 
+      const sheetId = process.env.GOOGLE_SHEET_ID;
+
+      if (serviceAccountEmail && privateKey && sheetId) {
+        try {
+          const { google } = await import('googleapis');
+          const auth = new google.auth.GoogleAuth({
+            credentials: {
+              client_email: serviceAccountEmail,
+              private_key: privateKey,
+            },
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+          });
+          
+          const sheets = google.sheets({ version: 'v4', auth });
+          
+          let targetSheetName = 'Sheet1';
+          try {
+            const spreadsheetInfo = await sheets.spreadsheets.get({
+              spreadsheetId: sheetId
+            });
+            if (spreadsheetInfo.data.sheets && spreadsheetInfo.data.sheets.length > 0) {
+              const firstSheetName = spreadsheetInfo.data.sheets[0].properties?.title;
+              if (firstSheetName) {
+                targetSheetName = firstSheetName;
+              }
+            }
+          } catch (getInfoError) {
+            console.warn("Could not retrieve spreadsheet metadata, falling back to 'Sheet1':", getInfoError);
+          }
+
+          await sheets.spreadsheets.values.append({
+            spreadsheetId: sheetId,
+            range: `${targetSheetName}!A:F`,
+            valueInputOption: 'USER_ENTERED',
+            requestBody: {
+              values: [[name, email, phone, budget, requirement, new Date().toISOString()]],
+            },
+          });
+          console.log(`Successfully appended lead to Google Sheets on tab "${targetSheetName}"`);
+        } catch (sheetError) {
+          console.error("Error saving lead to Google Sheets:", sheetError);
+          // Don't throw here, we still saved it locally
+        }
+      }
+
+      res.json({ success: true, id: result.lastInsertRowid });
+    } catch (error) {
+      console.error("Error saving lead:", error);
+      res.status(500).json({ error: "Failed to save strategy call request" });
+    }
   });
 
   // Vite middleware for development

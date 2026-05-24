@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const images = [
@@ -29,6 +29,25 @@ function AboutImage({ src, index, scrollYProgress }: { src: string; index: numbe
 
 export default function About() {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          const event = new CustomEvent("pause-gallery-videos");
+          window.dispatchEvent(event);
+        }
+      },
+      {
+        threshold: 0.05,
+      }
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
   
   // Scroll progress for the background and text color changes
   const { scrollYProgress: colorScrollProgress } = useScroll({

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import logoImage from "../assets/images/logo.png";
+import { Play, Pause } from "lucide-react";
+
+import { Link } from "react-router-dom";
 
 interface Partner {
   id: number;
@@ -11,7 +14,7 @@ interface Partner {
 
 export default function Hero() {
   const [partners, setPartners] = useState<Partner[]>([
-    { id: 1, name: "grazia stone", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779217991/interior_design_f0sty1.mov", clientUrl: "#" },
+    { id: 1, name: "grazia stone", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779217991/interior_design_f0sty1.mp4", clientUrl: "#" },
     { id: 2, name: "plan my interior", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218600/Doors_AI_ads_hvxw6r.mp4", clientUrl: "#" },
     { id: 3, name: "vistara infra", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/motion_graphics_Real_estate_y7fz8k.mp4", clientUrl: "#" },
     { id: 4, name: "zaira jewellery", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218601/ai_story_bracelet_ad_etgcef.mp4", clientUrl: "#" },
@@ -131,19 +134,16 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
-            className="max-w-2xl mx-auto px-4 pointer-events-auto"
+            className="max-w-2xl mx-auto px-4"
           >
             <p className="text-white/80 text-lg md:text-xl font-medium leading-relaxed mb-8 font-sans">
               Performance marketing meets cinematic storytelling.<br className="hidden md:block" />
               We help brands scale with scroll-stopping creatives, data-backed ads, and content engineered for attention.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-colors w-full sm:w-auto">
+              <Link to="/strategy-call" className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-colors w-full sm:w-auto pointer-events-auto inline-flex items-center justify-center">
                 Book a Strategy Call
-              </button>
-              <button className="bg-transparent border border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-colors w-full sm:w-auto">
-                View Our Work
-              </button>
+              </Link>
             </div>
           </motion.div>
         </motion.div>
@@ -201,25 +201,56 @@ export default function Hero() {
 function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; index: number; scrollYProgress: any }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useMotionValueEvent(scrollYProgress, "change", (latest: number) => {
     setIsOpen(latest >= 0.3);
   });
 
-  const shouldPlay = isHovered && isOpen;
-
+  // Automatically pause/reset when the video expands/collapses out of view
   useEffect(() => {
-    if (videoRef.current) {
-      if (shouldPlay) {
-        console.log("Playing video:", partner.name);
-        videoRef.current.play().catch(err => console.log("Video play failed:", err));
-      } else {
-        console.log("Pausing video:", partner.name);
+    if (!isOpen && isPlaying && videoRef.current) {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  }, [isOpen]);
+
+  // Pause when the "Impossible to ignore" section is visible
+  useEffect(() => {
+    const handleGlobalPause = () => {
+      if (videoRef.current && isPlaying) {
         videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    };
+    window.addEventListener("pause-gallery-videos", handleGlobalPause);
+    return () => {
+      window.removeEventListener("pause-gallery-videos", handleGlobalPause);
+    };
+  }, [isPlaying]);
+
+  const togglePlay = () => {
+    if (!isOpen) return;
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        setIsLoading(true);
+        videoRef.current.play()
+          .then(() => {
+            setIsPlaying(true);
+            setIsLoading(false);
+          })
+          .catch(err => {
+            console.log("Play failed:", err);
+            setIsLoading(false);
+          });
       }
     }
-  }, [shouldPlay]);
+  };
 
   // Transition from block to card
   // Blocks are at the bottom, different widths and heights
@@ -245,32 +276,64 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
       <motion.div
         className={`relative overflow-hidden cursor-none group ${blockColor}`}
         style={{ width, height, borderRadius }}
+        onClick={togglePlay}
         onMouseEnter={() => {
           if (isOpen) {
-            console.log("Hover enter:", partner.name);
             setIsHovered(true);
           }
         }}
         onMouseLeave={() => {
-          console.log("Hover leave:", partner.name);
           setIsHovered(false);
         }}
       >
         <motion.video
           ref={videoRef}
+          src={partner.videoUrl}
           loop
           playsInline
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-          style={{ opacity: shouldPlay ? 1 : 0 }}
+          style={{ opacity: isOpen ? 1 : 0 }}
+          onWaiting={() => setIsLoading(true)}
+          onPlaying={() => {
+            setIsLoading(false);
+            setIsPlaying(true);
+          }}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onCanPlay={() => setIsLoading(false)}
+          onLoadStart={() => setIsLoading(true)}
+          onLoadedData={() => setIsLoading(false)}
+        />
+        
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500 pointer-events-none" style={{ opacity: isOpen ? 1 : 0 }} />
+
+        {/* Modern Centered Loading Overlay */}
+        {isOpen && isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all z-20 pointer-events-none">
+            <div className="relative w-12 h-12 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border-2 border-white/10 animate-ping" />
+              <div className="w-10 h-10 rounded-full border-2 border-t-[#F4CE14] border-r-transparent border-b-[#F4CE14]/30 border-l-transparent animate-spin" />
+            </div>
+          </div>
+        )}
+
+        {/* Floating/Centered Accent Play Control Overlay */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ 
+            opacity: (!isPlaying && !isLoading && isOpen) ? 0.9 : 0,
+            scale: (!isPlaying && !isLoading && isOpen) ? 1 : 0.8
+          }}
+          transition={{ duration: 0.3 }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
         >
-          <source src={partner.videoUrl} type="video/mp4" />
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-waterfall-in-forest-2213-large.mp4" type="video/mp4" />
-        </motion.video>
+          <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+            <Play className="w-6 h-6 text-white fill-white ml-0.5" />
+          </div>
+        </motion.div>
         
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" style={{ opacity: shouldPlay ? 1 : 0 }} />
-        
-        {shouldPlay && (
+        {isHovered && isOpen && (
           <motion.div
             className="fixed pointer-events-none z-50 w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-black uppercase tracking-tighter text-center p-4 shadow-xl"
             initial={{ scale: 0 }}
@@ -281,9 +344,20 @@ function VideoCard({ partner, index, scrollYProgress }: { partner: Partner; inde
               transform: "translate(-50%, -50%)"
             }}
           >
-            <div className="flex flex-col items-center">
-              <span>View</span>
-              <span>Client</span>
+            <div className="flex flex-col items-center gap-1">
+              {isLoading ? (
+                <span className="animate-pulse">Loading</span>
+              ) : isPlaying ? (
+                <>
+                  <Pause className="w-4 h-4 text-black stroke-[3]" />
+                  <span>Pause</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 text-black fill-black stroke-[3] ml-0.5" />
+                  <span>Play</span>
+                </>
+              )}
             </div>
           </motion.div>
         )}

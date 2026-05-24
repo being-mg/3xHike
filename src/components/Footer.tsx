@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   return (
     <footer className="relative h-screen overflow-hidden bg-[#F3EFE9] flex items-center justify-center">
@@ -22,9 +24,9 @@ export default function Footer() {
           let's build something impossible to ignore.
         </p>
         
-        <button className="bg-white text-black hover:bg-gray-200 px-10 py-5 rounded-full text-sm md:text-base font-bold uppercase tracking-wider transition-transform hover:scale-105">
+        <Link to="/strategy-call" className="bg-white text-black hover:bg-gray-200 px-10 py-5 rounded-full text-sm md:text-base font-bold uppercase tracking-wider transition-transform hover:scale-105 inline-block">
           Book Your Free Strategy Call
-        </button>
+        </Link>
       </div>
 
       {/* Huge Footer Text */}
