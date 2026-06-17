@@ -2,8 +2,19 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import Database from "better-sqlite3";
 import path from "path";
+import { GoogleGenAI } from "@google/genai";
 
 const db = new Database("agency.db");
+
+// Initialize Gemini Client
+const ai = process.env.GEMINI_API_KEY ? new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+  httpOptions: {
+    headers: {
+      'User-Agent': 'aistudio-build',
+    }
+  }
+}) : null;
 
 // Initialize database
 db.exec(`
@@ -104,6 +115,38 @@ async function startServer() {
   app.get("/api/scoop", (req, res) => {
     const scoop = db.prepare("SELECT * FROM scoop").all();
     res.json(scoop);
+  });
+
+  app.post("/api/gmail-assistant", async (req, res) => {
+    try {
+      const { action, emailBody, sender, subject, replyTone, description } = req.body;
+      if (!ai) {
+        return res.status(500).json({ 
+          error: "Gemini API client not configured on server. Please ensure GEMINI_API_KEY is configured in Settings > Secrets." 
+        });
+      }
+
+      let prompt = "";
+      if (action === "summarize") {
+        prompt = `Please provide a concise, high-impact bulleted summary of this communication thread.\n\nSubject: ${subject}\nFrom: ${sender}\n\nEmail body text:\n${emailBody}`;
+      } else if (action === "draft_reply") {
+        prompt = `Draft a direct and incredibly professional email reply using a tone of "${replyTone || 'polite and bold'}". Keep the response highly conversion-oriented, focused on scheduling a strategic performance alignment, and use friendly lowercase agency formatting appropriate for 3xHike growth consultants. Avoid generic corporate fluff. Provide details placeholder variables like [My Name] exactly.\n\nOriginal Email Subject: ${subject}\nOriginal Sender: ${sender}\nOriginal Message Content:\n${emailBody}`;
+      } else if (action === "compose_new") {
+        prompt = `You are a growth copywriter at 3xHike, a premium direct-response video ad agency specialized in 'impossible to ignore' creatives. Compose an outreach email script based on this directive: "${description}". Use friendly lowercase-highlight style, mention we build ads forGrazia Stone and Cinco Livings, make it direct-response oriented, and use standard placeholder tags like [Recipient] or [My Name].`;
+      } else {
+        return res.status(400).json({ error: "Invalid action type requested" });
+      }
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.5-flash',
+        contents: prompt,
+      });
+
+      res.json({ text: response.text || "No output generated." });
+    } catch (error: any) {
+      console.error("Gemini assistant failed:", error);
+      res.status(500).json({ error: error.message || "Failed to process through Gemini models" });
+    }
   });
 
   app.post("/api/leads", async (req, res) => {

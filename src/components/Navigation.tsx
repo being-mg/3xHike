@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const navItems = [
   { color: "bg-black", label: "work" },
@@ -18,6 +19,19 @@ export default function Navigation() {
 
   return (
     <div className="hidden md:flex fixed right-4 md:right-6 top-6 md:top-10 z-50 flex-col gap-4 md:gap-2 items-end">
+      <Link to="/gmail" className="no-underline">
+        <motion.div
+          className="bg-gradient-to-r from-[#FF4500] to-[#F4CE14] px-4 md:px-6 py-2 rounded-full cursor-pointer flex items-center justify-center gap-1.5 min-w-[80px] md:min-w-[100px] shadow-xl border border-white/10"
+          whileHover={{ scale: 1.05, x: -5 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+          <span className="text-white text-[11px] md:text-[13px] font-black lowercase tracking-tight">
+            gmail inbox
+          </span>
+        </motion.div>
+      </Link>
+
       {navItems.map((item, i) => (
         <motion.div
           key={i}

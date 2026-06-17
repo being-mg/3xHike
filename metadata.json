@@ -1,5 +1,6 @@
 {
   "name": "3xHike Social Media Agency",
   "description": "A cinematic, high-performance social media agency website with interactive 3D physics and smooth animations.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
