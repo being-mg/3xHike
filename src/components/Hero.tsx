@@ -185,36 +185,25 @@ export default function Hero() {
         onMouseLeave={handleMouseLeave}
       >
         
-        {/* Logo */}
+        {/* Hero Content with Logo in Flow */}
         <motion.div 
-          className="absolute top-6 md:top-8 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center"
-          style={{ opacity: heroOpacity }}
-        >
-          <img 
-            src={logoImage} 
-            alt="3xHike Logo" 
-            style={{
-              height: isMobile ? "54px" : "300px",
-              width: isMobile ? "60px" : "350px",
-              paddingLeft: "0px",
-              marginLeft: isMobile ? "-4px" : "-20px",
-              marginRight: isMobile ? "-4px" : "-20px",
-              marginTop: isMobile ? "-12px" : "-47px",
-              marginBottom: isMobile ? "-15px" : "-60px"
-            }}
-          />
-        </motion.div>
-
-        {/* Hero Content */}
-        <motion.div 
-          className="text-center max-w-7xl z-10 pointer-events-none flex flex-col items-center justify-center gap-6"
+          className="text-center max-w-7xl z-10 pointer-events-none flex flex-col items-center justify-center gap-4 md:gap-6 px-4"
           style={{ opacity: heroOpacity, scale: heroScale }}
         >
+          {/* Logo placed directly in flow above tagline, scaled elegantly to prevent any overlap */}
+          <div className="pointer-events-auto flex justify-center items-center mb-2 md:mb-4">
+            <img 
+              src={logoImage} 
+              alt="3xHike Logo" 
+              className="h-14 sm:h-20 md:h-28 lg:h-36 xl:h-44 w-auto object-contain transition-all duration-300"
+            />
+          </div>
+
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-white/60 tracking-[0.2em] text-sm md:text-base font-medium font-sans uppercase mb-[-2rem]"
+            className="text-white/60 tracking-[0.2em] text-sm md:text-base font-medium font-sans uppercase mb-[-1rem] md:mb-[-1.5rem]"
           >
             PERFORMANCE • CONTENT • GROWTH
           </motion.p>
@@ -248,10 +237,6 @@ export default function Hero() {
             transition={{ delay: 0.8, duration: 0.8 }}
             className="max-w-2xl mx-auto px-4"
           >
-            <p className="text-white/80 text-lg md:text-xl font-medium leading-relaxed mb-8 font-sans">
-              Performance marketing meets cinematic storytelling.<br className="hidden md:block" />
-              We help brands scale with scroll-stopping creatives, data-backed ads, and content engineered for attention.
-            </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/strategy-call" className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-colors w-full sm:w-auto pointer-events-auto inline-flex items-center justify-center">
                 Book a Strategy Call
@@ -548,7 +533,7 @@ function FullscreenPlayer({ partner, onClose }: { partner: Partner; onClose: () 
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.92, opacity: 0 }}
         transition={{ type: "spring", damping: 26, stiffness: 280 }}
-        className="relative w-full h-[100dvh] md:h-[85vh] max-w-lg aspect-[9/16] bg-black md:rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center cursor-default"
+        className="relative h-[100dvh] md:h-[85vh] aspect-[9/16] max-w-full bg-black md:rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center cursor-default"
         onClick={(e) => e.stopPropagation()}
       >
         <video
