@@ -406,7 +406,6 @@ function VideoCard({
   return (
     <motion.div className="flex-shrink-0 flex flex-col justify-end" style={{ opacity }}>
       <motion.div
-        layoutId={`card-${partner.id}`}
         className={`relative overflow-hidden group ${blockColor}`}
         style={{ width, height, borderRadius }}
         onClick={togglePlay}
@@ -537,7 +536,6 @@ function FullscreenPlayer({ partner, onClose }: { partner: Partner; onClose: () 
 
   return (
     <motion.div
-      layoutId={`card-${partner.id}`}
       className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-0 md:p-6 cursor-pointer"
       onClick={onClose}
       initial={{ opacity: 0 }}
@@ -545,7 +543,11 @@ function FullscreenPlayer({ partner, onClose }: { partner: Partner; onClose: () 
       exit={{ opacity: 0 }}
     >
       {/* Immersive Video Container */}
-      <div 
+      <motion.div 
+        initial={{ scale: 0.92, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.92, opacity: 0 }}
+        transition={{ type: "spring", damping: 26, stiffness: 280 }}
         className="relative w-full h-[100dvh] md:h-[85vh] max-w-lg aspect-[9/16] bg-black md:rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center cursor-default"
         onClick={(e) => e.stopPropagation()}
       >
@@ -606,7 +608,7 @@ function FullscreenPlayer({ partner, onClose }: { partner: Partner; onClose: () 
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-      </div>
+      </motion.div>
 
       {/* Desktop Close Button outside video card */}
       <button
