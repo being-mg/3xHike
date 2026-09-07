@@ -38,7 +38,7 @@ export default function PhysicsPlayground() {
 
     // Create falling elements
     const labels = ["insta", "phone number", "address", "what's app", "email", "lets talk"];
-    const colors = ["#2B38F1", "#F4CE14", "#FF6B2B", "#A0C1A6", "#1A1A1A"];
+    const colors = ["#000000", "#00d2ff", "#FFFFFF", "#000000", "#00d2ff"];
     const shapes: Matter.Body[] = [];
 
     // Add specific label shapes
@@ -47,6 +47,7 @@ export default function PhysicsPlayground() {
       const x = Math.random() * width;
       const y = -Math.random() * 3000 - 200;
       const color = colors[i % colors.length];
+      const strokeStyle = color === "#000000" ? "#00d2ff" : "#FFFFFF";
       
       // Calculate width based on text length
       const textWidth = label.length * 12 + 40;
@@ -57,8 +58,8 @@ export default function PhysicsPlayground() {
         label: label, // Store label in the body
         render: { 
           fillStyle: color,
-          strokeStyle: "#000000",
-          lineWidth: 1
+          strokeStyle: strokeStyle,
+          lineWidth: color === "#000000" ? 2 : 1
         }
       });
       
@@ -81,7 +82,7 @@ export default function PhysicsPlayground() {
           context.save();
           context.translate(x, y);
           context.rotate(body.angle);
-          context.fillStyle = (body.render.fillStyle === "#1A1A1A" || body.render.fillStyle === "#2B38F1") ? "#FFFFFF" : "#000000";
+          context.fillStyle = (body.render.fillStyle === "#000000") ? "#00d2ff" : "#000000";
           context.fillText(body.label.toUpperCase(), 0, 0);
           context.restore();
         }

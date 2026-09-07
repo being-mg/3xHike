@@ -18,11 +18,23 @@ export default function Specialists() {
     offset: ["start end", "end start"]
   });
 
-  // Background color transition from yellow to white
+  // Background color transition from black to white
   const backgroundColor = useTransform(
     scrollYProgress,
     [0, 0.2],
-    ["#F4CE14", "#FFFFFF"]
+    ["#000000", "#FFFFFF"]
+  );
+
+  const textColor = useTransform(
+    scrollYProgress,
+    [0, 0.2],
+    ["#FFFFFF", "#000000"]
+  );
+
+  const textOpacityClass = useTransform(
+    scrollYProgress,
+    [0, 0.2],
+    ["text-white/80", "text-black/80"]
   );
 
   return (
@@ -45,11 +57,11 @@ export default function Specialists() {
         </div>
 
         {/* Text Content */}
-        <div className="max-w-xl">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12 uppercase">
-            we don't run ads <br /> we build attention machines.
+        <motion.div className="max-w-xl" style={{ color: textColor }}>
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12 uppercase font-display">
+            we don't run ads <br /> <span className="text-[#00d2ff]">we build attention machines.</span>
           </h2>
-          <div className="space-y-6 text-base md:text-lg text-black/80 font-medium leading-relaxed mb-16">
+          <div className="space-y-6 text-base md:text-lg font-medium leading-relaxed mb-16 opacity-90">
             <p>
               Every brand has content. Very few know how to convert attention into revenue.
             </p>
@@ -58,10 +70,10 @@ export default function Specialists() {
             </p>
           </div>
 
-          <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-[0.9] mb-6 md:mb-8 uppercase">
+          <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-[0.9] mb-6 md:mb-8 uppercase font-display">
             a team obsessed with growth.
           </h3>
-          <div className="space-y-6 text-base md:text-lg text-black/80 font-medium leading-relaxed">
+          <div className="space-y-6 text-base md:text-lg font-medium leading-relaxed opacity-90">
             <p>
               Designers, editors, strategists, media buyers, and creators working together to build brands that dominate digitally.
             </p>
@@ -69,7 +81,7 @@ export default function Specialists() {
               We move fast, test aggressively, and create content people actually want to watch.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </motion.section>
   );
@@ -107,7 +119,7 @@ function StackCard({ src, index, scrollYProgress }: { src: string; index: number
 
   return (
     <motion.div
-      className="absolute w-[40vw] h-[60vw] lg:w-[22vw] lg:h-[33vw] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10"
+      className="absolute w-[60vw] h-[90vw] md:w-[40vw] md:h-[60vw] lg:w-[22vw] lg:h-[33vw] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10"
       style={{
         rotate,
         y,

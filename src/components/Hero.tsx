@@ -134,13 +134,13 @@ export default function Hero() {
   const blocksY = useTransform(
     scrollYProgress, 
     [0, 0.15, 0.3], 
-    ["0vh", "0vh", isMobile ? "-8vh" : "-15vh"]
+    ["0vh", "0vh", isMobile ? "-12vh" : "-15vh"]
   );
   
   const blocksContainerWidth = useTransform(
     scrollYProgress, 
     [0.15, 0.3], 
-    [isMobile ? "60vw" : "25vw", "100vw"]
+    [isMobile ? "75vw" : "25vw", "100vw"]
   );
 
   const blocksContainerPadding = useTransform(
@@ -152,7 +152,7 @@ export default function Hero() {
   // Horizontal Scroll
   // 0.3 to 1: Scroll horizontally
   const xStr = isMobile 
-    ? `-${(partners.length - 1.25) * 75}%` 
+    ? `-${(partners.length - 1.3) * 60}%` 
     : `-${(partners.length - 3) * 25}%`;
   const x = useTransform(scrollYProgress, [0.3, 1], ["0%", xStr]);
 
@@ -168,12 +168,12 @@ export default function Hero() {
   const galleryHeaderOpacity = useTransform(scrollYProgress, [0.25, 0.35], [0, 1]);
 
   const lines = [
-    "We build brands",
-    "people remember."
+    "WE BUILD BRANDS",
+    "PEOPLE REMEMBER."
   ];
 
   return (
-    <section ref={containerRef} className="relative h-[600vh] bg-agency-blue">
+    <section ref={containerRef} className="relative h-[600vh] bg-black text-white">
       <div 
         className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center select-none"
         onTouchStart={handleTouchStart}
@@ -203,32 +203,31 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-white/60 tracking-[0.2em] text-sm md:text-base font-medium font-sans uppercase mb-[-1rem] md:mb-[-1.5rem]"
+            className="text-white/60 tracking-[0.2em] text-sm md:text-base font-medium font-sans uppercase mb-[-0.5rem] md:mb-[-1rem]"
           >
             PERFORMANCE • CONTENT • GROWTH
           </motion.p>
           
-          <h1 className="text-white text-[12vw] md:text-[9vw] leading-[1.3] md:leading-[0.85] font-black tracking-tighter px-4 font-display">
-            {lines.map((line, i) => (
-              <div key={i} className="overflow-hidden pb-4 md:pb-0">
-                <motion.div
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  transition={{
-                    duration: 1,
-                    delay: i * 0.2,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  style={
-                    i === 0
-                      ? { fontFamily: "Times New Roman", fontStyle: "italic", marginBottom: "47px" }
-                      : { fontFamily: "Georgia", fontWeight: "normal", fontStyle: "normal", textDecorationLine: "none", lineHeight: "1.2", fontSize: "0.8em" }
-                  }
-                >
-                  {line}
-                </motion.div>
-              </div>
-            ))}
+          <h1 className="text-white text-[10vw] md:text-[7.5vw] uppercase leading-[0.95] font-black tracking-tight px-4 font-display">
+            <div>
+              <motion.div
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              >
+                WE BUILD BRANDS
+              </motion.div>
+            </div>
+            <div className="overflow-hidden pb-4 md:pb-0">
+              <motion.div
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="text-[#00d2ff]"
+              >
+                PEOPLE REMEMBER.
+              </motion.div>
+            </div>
           </h1>
 
           <motion.div
@@ -238,7 +237,7 @@ export default function Hero() {
             className="max-w-2xl mx-auto px-4"
           >
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/strategy-call" className="bg-white text-black hover:bg-gray-200 px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-colors w-full sm:w-auto pointer-events-auto inline-flex items-center justify-center">
+              <Link to="/strategy-call" className="bg-white text-black hover:bg-black hover:text-white hover:border-[#00d2ff] hover:shadow-[0_0_20px_rgba(0,210,255,0.4)] border border-transparent px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wide transition-all w-full sm:w-auto pointer-events-auto inline-flex items-center justify-center">
                 Book a Strategy Call
               </Link>
             </div>
@@ -257,7 +256,7 @@ export default function Hero() {
 
         {/* The Transitioning Blocks / Gallery */}
         <motion.div 
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-end overflow-visible h-[10vh]"
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-end overflow-visible h-[18vh] md:h-[15vh]"
           style={{ 
             y: blocksY,
             width: blocksContainerWidth,
@@ -333,13 +332,23 @@ function VideoCard({
     setIsOpen(latest >= 0.3);
   });
 
-  // Automatically pause/reset when the video expands/collapses out of view
+  // Ensure video starts playing as an active preview right away
   useEffect(() => {
-    if (!isOpen && isPlaying && videoRef.current) {
-      videoRef.current.pause();
-      setIsPlaying(false);
+    if (videoRef.current) {
+      videoRef.current.play().catch(err => {
+        console.log("Auto-preview play failed:", err);
+      });
     }
-  }, [isOpen, isPlaying]);
+  }, []);
+
+  // Make sure video continues playing when isOpen changes (don't pause)
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(err => {
+        console.log("Play update failed:", err);
+      });
+    }
+  }, [isOpen]);
 
   // Pause when another card goes fullscreen, or the "Impossible to ignore" section is visible
   useEffect(() => {
@@ -347,6 +356,10 @@ function VideoCard({
       if (videoRef.current && isPlaying) {
         videoRef.current.pause();
         setIsPlaying(false);
+       }
+    } else if (activePartnerId === null) {
+      if (videoRef.current && !isPlaying) {
+        videoRef.current.play().catch(err => console.log("Play resume failed:", err));
       }
     }
   }, [activePartnerId, partner.id, isPlaying]);
@@ -374,22 +387,41 @@ function VideoCard({
   const blockWidths = ["40%", "20%", "20%", "20%"];
   const blockHeights = ["100%", "80%", "80%", "80%"];
   
-  // Use website colors for background
-  const themeColors = ["bg-[#F4CE14]", "bg-[#FF6B2B]", "bg-[#A0C1A6]", "bg-black", "bg-[#F3EFE9]"];
+  // Subtle glowing boundaries for dark elements
+  const themeColors = [
+    "bg-neutral-950 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
+    "bg-neutral-900 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
+    "bg-neutral-950 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
+    "bg-neutral-900 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
+    "bg-neutral-950 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300"
+  ];
   const blockColor = themeColors[index % themeColors.length];
 
   const initialWidth = index < 4 ? blockWidths[index] : "0vw";
   const initialHeight = index < 4 ? blockHeights[index] : "0vh";
 
-  const width = useTransform(scrollYProgress, [0.15, 0.3], [initialWidth, isMobile ? "75vw" : "22vw"]);
-  const height = useTransform(scrollYProgress, [0.15, 0.3], [initialHeight, isMobile ? "110vw" : "39vw"]);
+  // Match standard 9:16 aspect ratio exactly for mobile (60vw / 106.6vw = 0.562) and desktop (22vw / 39vw = 0.564)
+  const width = useTransform(scrollYProgress, [0.15, 0.3], [initialWidth, isMobile ? "60vw" : "22vw"]);
+  const height = useTransform(scrollYProgress, [0.15, 0.3], [initialHeight, isMobile ? "106.6vw" : "39vw"]);
   const borderRadius = useTransform(scrollYProgress, [0.15, 0.3], [index < 4 ? "12px 12px 0 0" : "16px", "16px"]);
   const opacity = useTransform(scrollYProgress, [0.15, 0.25], [index < 4 ? 1 : 0, 1]);
+  
+  // Smoothly animate the label height, opacity, and margin to prevent vertical jumps or overlap issues
   const labelOpacity = useTransform(scrollYProgress, [0.3, 0.4], [0, 1]);
-  const labelHeight = useTransform(scrollYProgress, [0.3, 0.4], ["0px", "auto"]);
+  const labelHeight = useTransform(scrollYProgress, [0.3, 0.4], [0, 24]);
+  const labelMarginTop = useTransform(scrollYProgress, [0.3, 0.4], [0, 12]);
+
+  // Video and overlay opacity adjustments
+  const videoOpacity = useTransform(scrollYProgress, [0.15, 0.3], [0.65, 1.0]);
+  const overlayOpacity = useTransform(scrollYProgress, [0.15, 0.3], [0.3, 0.1]);
+
+  // Float classes only apply in Hero (peeking) mode, then smoothly disabled as the gallery opens
+  const floatClass = !isOpen 
+    ? (index % 2 === 0 ? "animate-float" : "animate-float-delayed") 
+    : "";
 
   return (
-    <motion.div className="flex-shrink-0 flex flex-col justify-end" style={{ opacity }}>
+    <motion.div className={`flex-shrink-0 flex flex-col justify-end ${floatClass}`} style={{ opacity }}>
       <motion.div
         className={`relative overflow-hidden group ${blockColor}`}
         style={{ width, height, borderRadius }}
@@ -406,11 +438,13 @@ function VideoCard({
         <motion.video
           ref={videoRef}
           src={partner.videoUrl}
+          autoPlay
+          muted
           loop
           playsInline
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-          style={{ opacity: isOpen ? 1 : 0 }}
+          style={{ opacity: videoOpacity }}
           onWaiting={() => setIsLoading(true)}
           onPlaying={() => {
             setIsLoading(false);
@@ -423,14 +457,17 @@ function VideoCard({
           onLoadedData={() => setIsLoading(false)}
         />
         
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500 pointer-events-none" style={{ opacity: isOpen ? 1 : 0 }} />
+        <motion.div 
+          className="absolute inset-0 bg-black/40 group-hover:bg-black/0 transition-colors duration-500 pointer-events-none" 
+          style={{ opacity: overlayOpacity }} 
+        />
 
         {/* Modern Centered Loading Overlay */}
         {isOpen && isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all z-20 pointer-events-none">
             <div className="relative w-12 h-12 flex items-center justify-center">
               <div className="absolute inset-0 rounded-full border-2 border-white/10 animate-ping" />
-              <div className="w-10 h-10 rounded-full border-2 border-t-[#F4CE14] border-r-transparent border-b-[#F4CE14]/30 border-l-transparent animate-spin" />
+              <div className="w-10 h-10 rounded-full border-2 border-t-[#00d2ff] border-r-transparent border-b-[#00d2ff]/30 border-l-transparent animate-spin" />
             </div>
           </div>
         )}
@@ -452,7 +489,7 @@ function VideoCard({
         
         {isHovered && isOpen && !isMobile && (
           <motion.div
-            className="fixed pointer-events-none z-50 w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-black uppercase tracking-tighter text-center p-4 shadow-xl"
+            className="fixed pointer-events-none z-50 w-24 h-24 bg-white rounded-full flex items-center justify-center text-black text-[10px] font-black uppercase tracking-tighter text-center p-4 shadow-xl animate-pulse"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             style={{
@@ -470,11 +507,11 @@ function VideoCard({
       </motion.div>
       
       <motion.div 
-        className="flex items-center gap-2 mt-4 overflow-hidden"
-        style={{ opacity: labelOpacity, height: labelHeight }}
+        className="flex items-center gap-2 overflow-hidden"
+        style={{ opacity: labelOpacity, height: labelHeight, marginTop: labelMarginTop }}
       >
-        <div className="w-1.5 h-1.5 bg-white rounded-full" />
-        <span className="text-white text-lg font-black lowercase tracking-tight">{partner.name}.</span>
+        <div className="w-1.5 h-1.5 bg-[#00d2ff] rounded-full animate-pulse" />
+        <span className="text-white text-xs md:text-sm font-bold uppercase tracking-widest font-display truncate max-w-[90%]">{partner.name}</span>
       </motion.div>
     </motion.div>
   );
@@ -568,7 +605,7 @@ function FullscreenPlayer({ partner, onClose }: { partner: Partner; onClose: () 
         {/* Loading Indicator */}
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] pointer-events-none">
-            <div className="w-12 h-12 rounded-full border-2 border-t-[#F4CE14] border-r-transparent border-b-[#F4CE14]/30 border-l-transparent animate-spin" />
+            <div className="w-12 h-12 rounded-full border-2 border-t-[#00d2ff] border-r-transparent border-b-[#00d2ff]/30 border-l-transparent animate-spin" />
           </div>
         )}
 
@@ -608,8 +645,8 @@ function FullscreenPlayer({ partner, onClose }: { partner: Partner; onClose: () 
       {/* Now Playing Info overlay */}
       <div className="absolute bottom-6 left-6 md:left-12 flex flex-col gap-1 text-white z-10 max-w-sm pointer-events-none">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-[#F4CE14] rounded-full animate-pulse" />
-          <span className="text-xs uppercase tracking-widest text-[#F4CE14] font-black">Now Playing</span>
+          <div className="w-2 h-2 bg-[#00d2ff] rounded-full animate-pulse" />
+          <span className="text-xs uppercase tracking-widest text-[#00d2ff] font-black">Now Playing</span>
         </div>
         <h3 className="text-2xl md:text-3xl font-black lowercase tracking-tighter truncate">{partner.name}.</h3>
       </div>

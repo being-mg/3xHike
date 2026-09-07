@@ -21,7 +21,7 @@ function AboutImage({ src, index, scrollYProgress }: { src: string; index: numbe
     <motion.img
       src={src}
       alt="Agency Culture"
-      className={index === 0 ? "block w-full h-auto object-cover" : "absolute inset-0 w-full h-full object-cover"}
+      className="absolute inset-0 w-full h-full object-cover"
       style={{ opacity: index === 0 ? 1 : opacity }}
     />
   );
@@ -64,7 +64,7 @@ export default function About() {
   const backgroundColor = useTransform(
     colorScrollProgress,
     [0, 0.8],
-    ["#2B38F1", "#FFFFFF"]
+    ["#000000", "#FFFFFF"]
   );
 
   const textColor = useTransform(
@@ -76,53 +76,53 @@ export default function About() {
   const brandHumanColor = useTransform(
     colorScrollProgress,
     [0, 0.8],
-    ["#FFFFFF", "#2B38F1"]
+    ["#00d2ff", "#0088ff"]
   );
 
   return (
     <motion.section 
       ref={containerRef} 
-      className="relative py-20 md:py-32 px-6 md:px-20 min-h-[200vh]"
+      className="relative py-12 md:py-32 px-6 md:px-20 min-h-screen lg:min-h-[200vh]"
       style={{ backgroundColor }}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-20">
-        <div className="relative lg:sticky top-auto lg:top-32 rounded-3xl overflow-hidden order-first lg:order-none mb-10 lg:mb-0 h-auto">
+        <div className="relative lg:sticky top-auto lg:top-32 rounded-3xl overflow-hidden order-first lg:order-none mb-4 lg:mb-0 aspect-[16/10] md:aspect-[4/3] w-full">
           {images.map((src, i) => (
             <AboutImage key={i} src={src} index={i} scrollYProgress={imageScrollProgress} />
           ))}
         </div>
         
-        <motion.div className="flex flex-col justify-center gap-12 md:gap-20 py-10 md:py-20" style={{ color: textColor }}>
+        <motion.div className="flex flex-col justify-center gap-8 md:gap-16 py-6 md:py-20" style={{ color: textColor }}>
           <div className="max-w-md">
-            <h2 className="text-4xl md:text-6xl uppercase leading-[0.9] mb-6 md:mb-8 font-black tracking-tighter">
+            <h2 className="text-4xl md:text-6xl uppercase leading-[0.9] mb-4 md:mb-6 font-black tracking-tighter">
               Impossible <br /> <motion.span style={{ color: brandHumanColor }}>to ignore</motion.span>
             </h2>
-            <p className="text-xl opacity-70 leading-relaxed font-medium">
+            <p className="text-base md:text-xl opacity-70 leading-relaxed font-medium">
               In a world where attention disappears in seconds, we help brands become impossible to ignore. 
               We combine paid media, creative psychology, and high-converting content to turn clicks into customers.
             </p>
           </div>
           
           <div className="max-w-md">
-            <h3 className="text-3xl font-bold uppercase tracking-tighter mb-6">Performance Marketing</h3>
-            <p className="text-lg opacity-80 leading-relaxed font-medium">
+            <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-4">Performance Marketing</h3>
+            <p className="text-sm md:text-lg opacity-80 leading-relaxed font-medium">
               From local businesses to scaling brands, we build marketing systems designed for measurable growth across the most competitive platforms.
             </p>
           </div>
 
           <div className="max-w-md">
-            <h3 className="text-3xl font-bold uppercase tracking-tighter mb-6">Audiences Into Communities</h3>
-            <p className="text-lg opacity-80 leading-relaxed font-medium">
+            <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-4">Audiences Into Communities</h3>
+            <p className="text-sm md:text-lg opacity-80 leading-relaxed font-medium">
               We focus on what drives actual results – turning passive scrollers into dedicated brand communities with engaging, platform-native storytelling.
             </p>
           </div>
 
           <div className="max-w-md">
-            <h3 className="text-3xl font-bold uppercase tracking-tighter mb-6">Creative That Performs</h3>
-            <p className="text-lg opacity-80 leading-relaxed font-medium">
+            <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-4">Creative That Performs</h3>
+            <p className="text-sm md:text-lg opacity-80 leading-relaxed font-medium">
               We create content designed for today’s attention economy — short-form videos, ad creatives, branded visuals, and campaigns that stop the scroll and drive action.
             </p>
-            <p className="text-lg opacity-80 leading-relaxed font-medium mt-4">
+            <p className="text-sm md:text-lg opacity-80 leading-relaxed font-medium mt-4">
               Every frame has a purpose.<br />
               Every campaign has a strategy.
             </p>

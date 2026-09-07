@@ -46,7 +46,19 @@ export default function Services() {
   const backgroundColor = useTransform(
     scrollYProgress,
     [0, 0.8],
-    ["#FFFFFF", "#F4CE14"]
+    ["#FFFFFF", "#000000"]
+  );
+
+  const textColor = useTransform(
+    scrollYProgress,
+    [0, 0.8],
+    ["#000000", "#FFFFFF"]
+  );
+
+  const borderColor = useTransform(
+    scrollYProgress,
+    [0, 0.8],
+    ["rgba(0,0,0,0.1)", "rgba(255,255,255,0.15)"]
   );
 
   return (
@@ -56,23 +68,29 @@ export default function Services() {
       style={{ backgroundColor }}
     >
       <div className="max-w-7xl mx-auto">
-        <p className="uppercase font-bold tracking-widest text-sm mb-12">Our Expertise</p>
+        <motion.p 
+          style={{ color: textColor }}
+          className="uppercase font-bold tracking-widest text-sm mb-12 font-display"
+        >
+          Our Expertise
+        </motion.p>
         
         <div className="flex flex-col">
           {services.map((service, i) => (
             <motion.div
               key={i}
-              className="group border-b border-black/10 py-10 flex flex-col md:flex-row items-start md:items-center justify-between cursor-pointer gap-4 md:gap-12"
+              className="group py-10 flex flex-col md:flex-row items-start md:items-center justify-between cursor-pointer gap-4 md:gap-12 transition-all duration-300 border-b"
+              style={{ color: textColor, borderColor }}
               whileHover={{ x: 20 }}
             >
-              <h3 className="text-3xl md:text-5xl lg:text-6xl uppercase transition-all duration-500 group-hover:italic group-hover:tracking-tighter font-bold whitespace-nowrap">
+              <h3 className="text-3xl md:text-5xl lg:text-6xl uppercase transition-all duration-500 group-hover:italic group-hover:tracking-tighter group-hover:text-[#00d2ff] font-bold whitespace-nowrap font-display">
                 {service.title}
               </h3>
-              <p className="text-sm md:text-base font-medium opacity-70 max-w-sm transition-opacity duration-500">
+              <p className="text-sm md:text-base font-medium opacity-75 max-w-sm transition-all duration-300 group-hover:text-white">
                 {service.desc}
               </p>
-              <div className="hidden md:flex w-8 h-8 md:w-12 md:h-12 rounded-full border border-black items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 md:w-6 md:h-6">
+              <div className="hidden md:flex w-8 h-8 md:w-12 md:h-12 rounded-full border border-current items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:border-[#00d2ff] group-hover:text-[#00d2ff] group-hover:bg-[#00d2ff]/10 flex-shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 md:w-6 md:h-6">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </div>

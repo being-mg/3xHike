@@ -5,31 +5,31 @@ const trends = [
   {
     title: "Why Most Ads Fail in the First 3 Seconds",
     date: "14 May 2026",
-    color: "bg-[#2B38F1]",
+    color: "bg-[#00d2ff]",
     shape: "flower"
   },
   {
     title: "The Psychology Behind Viral Reels",
     date: "2 May 2026",
-    color: "bg-[#F4CE14]",
+    color: "bg-current",
     shape: "stack"
   },
   {
     title: "Meta Ads vs Organic Content in 2026",
     date: "18 April 2026",
-    color: "bg-[#FF6B2B]",
+    color: "bg-[#00d2ff]",
     shape: "wave"
   },
   {
     title: "How Local Brands Can Scale Using Short Form Content",
     date: "4 April 2026",
-    color: "bg-[#2B38F1]",
+    color: "bg-[#00d2ff]",
     shape: "wave-alt"
   },
   {
     title: "What Makes UGC Ads Convert Better",
     date: "20 March 2026",
-    color: "bg-[#F4CE14]",
+    color: "bg-current",
     shape: "stack"
   }
 ];
@@ -44,34 +44,43 @@ export default function Trends() {
   const backgroundColor = useTransform(
     scrollYProgress,
     [0, 0.8],
-    ["#FFFFFF", "#A0C1A6"]
+    ["#FFFFFF", "#000000"]
+  );
+
+  const textColor = useTransform(
+    scrollYProgress,
+    [0, 0.8],
+    ["#000000", "#FFFFFF"]
   );
 
   return (
     <motion.section 
       ref={containerRef}
-      className="relative py-20 md:py-32 px-6 md:px-20 min-h-screen overflow-hidden"
+      className="relative py-20 md:py-32 px-6 md:px-20 min-h-screen overflow-hidden animate-fade-in"
       style={{ backgroundColor }}
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 items-start pt-10 md:pt-20 relative z-50">
         {/* Left Content */}
-        <div className="relative lg:sticky top-40 lg:h-[calc(100vh-10rem)] flex flex-col justify-end pb-10">
+        <motion.div 
+          className="relative lg:sticky top-40 lg:h-[calc(100vh-10rem)] flex flex-col justify-end pb-10"
+          style={{ color: textColor }}
+        >
           <div className="mb-10 md:mb-0">
-            <p className="text-xs md:text-sm font-bold mb-2 uppercase tracking-wide opacity-50">INSIGHTS</p>
-            <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-8 md:mb-12">Performance Data.</h3>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] mb-8 md:mb-12 max-w-sm">
+            <p className="text-xs md:text-sm font-bold mb-2 uppercase tracking-widest opacity-50 font-display">INSIGHTS</p>
+            <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-4 text-[#00d2ff] font-display">Performance Data.</h3>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.95] mb-8 md:mb-12 max-w-sm uppercase font-display">
               Attention Is the New Currency.
             </h2>
             <div>
-              <button className="bg-[#2B38F1] text-white px-8 py-3 rounded-full font-bold text-sm uppercase hover:scale-105 transition-transform tracking-wider">
+              <button className="bg-black text-white hover:bg-[#00d2ff] hover:text-black hover:shadow-[0_0_20px_rgba(0,210,255,0.4)] hover:border-[#00d2ff] border border-white/20 px-8 py-4 rounded-full font-bold text-sm uppercase transition-all tracking-wider pointer-events-auto">
                 All Insights
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Right List */}
-        <div className="space-y-8 md:space-y-12">
+        <motion.div className="space-y-8 md:space-y-12" style={{ color: textColor }}>
           {trends.map((trend, i) => (
             <motion.div 
               key={i}
@@ -84,14 +93,14 @@ export default function Trends() {
                 <Shape type={trend.shape} color={trend.color} />
               </div>
               <div>
-                <h4 className="text-xl md:text-3xl font-black tracking-tighter leading-tight group-hover:italic transition-all">
+                <h4 className="text-xl md:text-3xl font-black tracking-tighter leading-tight group-hover:text-[#00d2ff] group-hover:italic transition-all duration-300 font-display">
                   {trend.title}
                 </h4>
-                <p className="text-xs md:text-sm font-medium opacity-60 mt-2">{trend.date}</p>
+                <p className="text-xs md:text-sm font-medium opacity-60 mt-2 font-display">{trend.date}</p>
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </motion.section>
   );
