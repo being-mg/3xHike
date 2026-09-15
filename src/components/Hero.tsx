@@ -14,12 +14,12 @@ interface Partner {
 
 export default function Hero() {
   const [partners, setPartners] = useState<Partner[]>([
-    { id: 1, name: "grazia stone", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779217991/interior_design_f0sty1.mp4", clientUrl: "#" },
-    { id: 2, name: "plan my interior", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218600/Doors_AI_ads_hvxw6r.mp4", clientUrl: "#" },
-    { id: 3, name: "vistara infra", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/motion_graphics_Real_estate_y7fz8k.mp4", clientUrl: "#" },
-    { id: 4, name: "zaira jewellery", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218601/ai_story_bracelet_ad_etgcef.mp4", clientUrl: "#" },
-    { id: 5, name: "cinco livings", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218610/ugc_ad_og6llh.mp4", clientUrl: "#" },
-    { id: 6, name: "allen town international school", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/q_auto/f_auto/v1779218608/school_ad_czugtm.mp4", clientUrl: "#" }
+    { id: 1, name: "grazia stone", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/v1789470128/interior_design__igzbig.mov", clientUrl: "#" },
+    { id: 2, name: "plan my interior", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/v1789470115/Doors_AI_ads_wyxe3y.mp4", clientUrl: "#" },
+    { id: 3, name: "vistara infra", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/v1789470089/Motion_graphics_Real_estate__a9vjjt.mp4", clientUrl: "#" },
+    { id: 4, name: "zairaa jewellery", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/v1789470191/ai_story_bracelet_ad_yyg7v1.mp4", clientUrl: "#" },
+    { id: 5, name: "cinco living", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/v1789470063/ugc_ad__hiaweb.mp4", clientUrl: "#" },
+    { id: 6, name: "allen town", videoUrl: "https://res.cloudinary.com/dxfgeowvx/video/upload/v1789470178/school_ad_mbyb6i.mp4", clientUrl: "#" }
   ]);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -330,39 +330,27 @@ function VideoCard({
 
   useMotionValueEvent(scrollYProgress, "change", (latest: number) => {
     setIsOpen(latest >= 0.3);
-  });
 
-  // Ensure video starts playing as an active preview right away
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(err => {
-        console.log("Auto-preview play failed:", err);
-      });
-    }
-  }, []);
-
-  // Make sure video continues playing when isOpen changes (don't pause)
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(err => {
-        console.log("Play update failed:", err);
-      });
-    }
-  }, [isOpen]);
-
-  // Pause when another card goes fullscreen, or the "Impossible to ignore" section is visible
-  useEffect(() => {
-    if (activePartnerId !== null && activePartnerId !== partner.id) {
-      if (videoRef.current && isPlaying) {
+    // In the hero section: keep videos strictly paused
+    if (latest < 0.2) {
+      if (videoRef.current && !videoRef.current.paused) {
         videoRef.current.pause();
-        setIsPlaying(false);
-       }
-    } else if (activePartnerId === null) {
-      if (videoRef.current && !isPlaying) {
-        videoRef.current.play().catch(err => console.log("Play resume failed:", err));
       }
     }
-  }, [activePartnerId, partner.id, isPlaying]);
+  });
+
+  // Only play video when mouse is hovering over the card, otherwise keep paused
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    if (isOpen && isHovered && activePartnerId === null) {
+      videoRef.current.play().catch(() => {});
+    } else {
+      if (!videoRef.current.paused) {
+        videoRef.current.pause();
+      }
+    }
+  }, [isOpen, isHovered, activePartnerId]);
 
   useEffect(() => {
     const handleGlobalPause = () => {
@@ -387,15 +375,40 @@ function VideoCard({
   const blockWidths = ["40%", "20%", "20%", "20%"];
   const blockHeights = ["100%", "80%", "80%", "80%"];
   
-  // Subtle glowing boundaries for dark elements
-  const themeColors = [
-    "bg-neutral-950 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
-    "bg-neutral-900 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
-    "bg-neutral-950 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
-    "bg-neutral-900 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300",
-    "bg-neutral-950 border border-white/20 shadow-[0_0_15px_rgba(0,210,255,0.12)] hover:border-[#00d2ff]/85 transition-all duration-300"
+  // Distinct, vibrant color themes for each hero panel
+  const panelThemes = [
+    {
+      card: "bg-[#d4ff00] border-t-2 border-[#eaff66] shadow-[0_0_30px_rgba(212,255,0,0.35)] text-black",
+      badge: "bg-black/20 text-black border border-black/20",
+      accent: "text-black"
+    },
+    {
+      card: "bg-[#ff5733] border-t-2 border-orange-200 shadow-[0_0_30px_rgba(255,87,51,0.35)] text-white",
+      badge: "bg-black/25 text-white border border-white/20",
+      accent: "text-white"
+    },
+    {
+      card: "bg-[#8b5cf6] border-t-2 border-purple-200 shadow-[0_0_30px_rgba(139,92,246,0.35)] text-white",
+      badge: "bg-black/25 text-white border border-white/20",
+      accent: "text-white"
+    },
+    {
+      card: "bg-[#10b981] border-t-2 border-emerald-200 shadow-[0_0_30px_rgba(16,185,129,0.35)] text-black",
+      badge: "bg-black/20 text-black border border-black/20",
+      accent: "text-black"
+    },
+    {
+      card: "bg-[#f59e0b] border-t-2 border-amber-200 shadow-[0_0_30px_rgba(245,158,11,0.35)] text-black",
+      badge: "bg-black/20 text-black border border-black/20",
+      accent: "text-black"
+    },
+    {
+      card: "bg-[#ec4899] border-t-2 border-pink-200 shadow-[0_0_30px_rgba(236,72,153,0.35)] text-white",
+      badge: "bg-black/25 text-white border border-white/20",
+      accent: "text-white"
+    }
   ];
-  const blockColor = themeColors[index % themeColors.length];
+  const theme = panelThemes[index % panelThemes.length];
 
   const initialWidth = index < 4 ? blockWidths[index] : "0vw";
   const initialHeight = index < 4 ? blockHeights[index] : "0vh";
@@ -411,19 +424,26 @@ function VideoCard({
   const labelHeight = useTransform(scrollYProgress, [0.3, 0.4], [0, 24]);
   const labelMarginTop = useTransform(scrollYProgress, [0.3, 0.4], [0, 12]);
 
-  // Video and overlay opacity adjustments
-  const videoOpacity = useTransform(scrollYProgress, [0.15, 0.3], [0.65, 1.0]);
-  const overlayOpacity = useTransform(scrollYProgress, [0.15, 0.3], [0.3, 0.1]);
+  // In the hero section (before scroll), videoOpacity is 0 so the vibrant panel color is 100% visible
+  // Only as user scrolls into the gallery (0.18 -> 0.3), the video fades in
+  const videoOpacity = useTransform(scrollYProgress, [0.18, 0.3], [0, 1.0]);
+  const overlayOpacity = useTransform(scrollYProgress, [0.18, 0.3], [0, 0.1]);
+  
+  // Hero panel information overlay (fades out as user scrolls into gallery)
+  const heroPanelContentOpacity = useTransform(scrollYProgress, [0.12, 0.22], [1, 0]);
 
   // Float classes only apply in Hero (peeking) mode, then smoothly disabled as the gallery opens
   const floatClass = !isOpen 
     ? (index % 2 === 0 ? "animate-float" : "animate-float-delayed") 
     : "";
 
+  // Cloudinary instant poster frame
+  const posterUrl = partner.videoUrl.replace(/\.(mp4|mov)$/i, ".jpg");
+
   return (
     <motion.div className={`flex-shrink-0 flex flex-col justify-end ${floatClass}`} style={{ opacity }}>
       <motion.div
-        className={`relative overflow-hidden group ${blockColor}`}
+        className={`relative overflow-hidden group transition-colors duration-500 ${theme.card}`}
         style={{ width, height, borderRadius }}
         onClick={togglePlay}
         onMouseEnter={() => {
@@ -435,15 +455,35 @@ function VideoCard({
           setIsHovered(false);
         }}
       >
+        {/* Hero Section: Colorful Panel Identity (Visible before scroll) */}
+        <motion.div 
+          className="absolute inset-0 p-3 sm:p-4 flex flex-col justify-between pointer-events-none z-[5]"
+          style={{ opacity: heroPanelContentOpacity }}
+        >
+          <div className="flex items-center justify-between">
+            <span className={`text-[9px] md:text-xs font-mono font-black uppercase px-2 py-0.5 rounded-full ${theme.badge}`}>
+              0{index + 1}
+            </span>
+            <div className="w-2 h-2 rounded-full bg-current opacity-80 animate-pulse" />
+          </div>
+          <div className="space-y-0.5">
+            <span className="text-[8px] md:text-[9px] uppercase tracking-widest font-mono opacity-75 block">Brand Case</span>
+            <h3 className={`text-xs sm:text-sm md:text-base font-black uppercase tracking-tight font-display leading-tight truncate ${theme.accent}`}>
+              {partner.name}
+            </h3>
+          </div>
+        </motion.div>
+
+        {/* Video Preview: Paused and hidden in hero section, plays ONLY when hovered in gallery */}
         <motion.video
           ref={videoRef}
           src={partner.videoUrl}
-          autoPlay
+          poster={posterUrl}
           muted
           loop
           playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 z-0"
           style={{ opacity: videoOpacity }}
           onWaiting={() => setIsLoading(true)}
           onPlaying={() => {
@@ -455,6 +495,14 @@ function VideoCard({
           onCanPlay={() => setIsLoading(false)}
           onLoadStart={() => setIsLoading(true)}
           onLoadedData={() => setIsLoading(false)}
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (partner.videoUrl.endsWith('.mov') && !target.src.endsWith('.mp4')) {
+              target.src = partner.videoUrl.replace(/\.mov$/, '.mp4');
+              target.load();
+              target.play().catch(() => {});
+            }
+          }}
         />
         
         <motion.div 
@@ -472,19 +520,22 @@ function VideoCard({
           </div>
         )}
 
-        {/* Floating/Centered Play Trigger Overlay on Hover */}
+        {/* Floating/Centered Play Trigger Overlay - visible when not playing on hover */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ 
-            opacity: (isOpen) ? 0.95 : 0,
-            scale: (isOpen) ? 1 : 0.8
+            opacity: (isOpen && (!isHovered || !isPlaying)) ? 0.95 : 0,
+            scale: (isOpen && (!isHovered || !isPlaying)) ? 1 : 0.85
           }}
-          transition={{ duration: 0.3 }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+          transition={{ duration: 0.25 }}
+          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10 gap-2"
         >
-          <div className="w-14 h-14 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-full border border-white/30 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+          <div className="w-14 h-14 bg-black/50 hover:bg-black/70 backdrop-blur-md rounded-full border border-white/30 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
             <Play className="w-5 h-5 text-white fill-white ml-0.5" />
           </div>
+          <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-white/90 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/15">
+            Hover to play
+          </span>
         </motion.div>
         
         {isHovered && isOpen && !isMobile && (
@@ -588,6 +639,14 @@ function FullscreenPlayer({ partner, onClose }: { partner: Partner; onClose: () 
             setIsPlaying(true);
           }}
           onCanPlay={() => setIsLoading(false)}
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (partner.videoUrl.endsWith('.mov') && !target.src.endsWith('.mp4')) {
+              target.src = partner.videoUrl.replace(/\.mov$/, '.mp4');
+              target.load();
+              target.play().catch(() => {});
+            }
+          }}
         />
 
         {/* Play/Pause indicator overlay */}
